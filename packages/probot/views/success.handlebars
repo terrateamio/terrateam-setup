@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" class="height-full" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Terrateam Setup</title>
+      <link rel="icon" href="/probot/static/logo.svg">
+      <link rel="stylesheet" href="/probot/static/primer.css">
+   </head>
+   <style>
+      .warning {
+      display: block;
+      padding: 6px;
+      margin: 6px;
+      border-radius: 3px;
+      border: 1px solid rgb(180,180,180);
+      background-color: rgb(255, 232, 232);
+      }
+   </style>
+   <body class="height-full bg-gray-light">
+      <div class="d-flex flex-column flex-justify-center flex-items-center text-center height-full">
+         <img src="/probot/static/logo.svg" alt="Terrateam Logo" width="100" class="mb-6">
+<div class="box-shadow rounded-2 border p-6 bg-white">
+   <div class="">
+      <h1 class="alt-h3 mb-2 text-center">
+         Success!
+      </h1>
+      <h2 class="alt-h3 mb-2 text-center">
+         Your GitHub Application has been created.
+      </h2>
+      <h2 class="alt-h3 mb-2 text-center">
+         Application URL: <a href="{{ html_url }}" target="_blank">{{ html_url }}</a>
+      </h2>
+      <hr>
+      <h3 class="alt-h3 mb-2 text-center" style="font-size:1.5em;">
+         Important:
+      </h3>
+      <h3 class="alt-h3 mb-2 text-center" style="font-size:1.5em;">
+         Do not install the application yet!<br>The Terrateam server must be fully deployed and running before you can register installations.
+      </h3>
+      <hr>
+      <h3 class="alt-h3 mb-2 text-left">
+         What to do next:
+      </h3>
+      <h3 class="alt-h3 ml-4 mb-2 text-left">
+         <ol type="1">
+            <li>Bookmark or copy the GitHub Application URL for future access.</li>
+            <li>Add your GitHub Application settings to your `.env` file.</li>
+            <li>Follow the remaining Terrateam deployment steps to get the server running.</li>
+         </ol>
+      </h3>
+   </div>
+</div>
+         <div class="mt-3">
+            <h3 class="alt-h3 mb-2 text-center">
+               GitHub Application settings
+            </h3>
+         </div>
+         <textarea id="env" rows="6" cols="100">{{ env_file }}</textarea>
+         <br>
+         <div id="copyToClipboard" class="d-flex flex-justify-center btn btn-outline">
+            Copy
+         </div>
+         <div class="mt-4">
+            <div class="d-flex flex-justify-center mt-2">
+               <a href="https://terrateam.io/docs/self-hosted#deployment-steps" class="btn btn-outline">Back to Terrateam Setup Instructions</a>
+            </div>
+         </div>
+         <div class="mt-4">
+            <h4 class="alt-h4 text-gray-light">
+               Support
+            </h4>
+            <div class="d-flex flex-justify-center mt-2">
+               <a href="https://terrateam.io/docs/" class="btn btn-outline mr-2">Docs</a>
+               <a href="https://terrateam.io/slack" class="btn btn-outline mr-2">Slack</a>
+               <a href="https://github.com/terrateamio/terrateam" class="btn btn-outline mr-2">GitHub</a>
+               <a href="mailto:support@terrateam.io" class="btn btn-outline">Email</a>
+            </div>
+         </div>
+      </div>
+      <script>
+         const copyBtn = document.getElementById('copyToClipboard');
+         copyBtn.addEventListener('click', function handleClick() {
+           copyBtn.textContent = 'Copied!';
+         });
+         document.getElementById('copyToClipboard').addEventListener('click', function() {
+           var text = document.getElementById('env');
+           text.select();
+           document.execCommand('copy');
+             window.getSelection().removeAllRanges();
+         })
+      </script>
+   </body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" class="height-full" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Terrateam Setup</title>
+      <link rel="icon" href="/probot/static/logo.svg">
+      <link rel="stylesheet" href="/probot/static/primer.css">
+   </head>
+   <body class="height-full bg-gray-light">
+      <div class="d-flex flex-column flex-justify-center flex-items-center text-center height-full">
+         <img src="/probot/static/logo.svg" alt="Terrateam Logo" width="100" class="mb-6">
+         <div class="box-shadow rounded-2 border p-6 bg-white">
+            <h1>
+               Welcome to Terrateam
+            </h1>
+            <div class="text-center mt-3">
+               <h3>Create your private GitHub app for Terrateam by clicking the button below.</h3>
+               <h3>Once it's created, you'll be automatically redirected back here to continue the setup.</h3>
+	       <hr>
+               <h3>This Terrateam app will be created in the {{ orgName }} GitHub organization.</h3>
+               <br>
+               <div class="d-flex flex-justify-center mt-2">
+                  <form action="{{ createAppUrl }}" method="post" class="d-flex flex-items-center">
+                     <button class="btn btn-outline" name="manifest" id="manifest" value='{{ manifest }}' >Create Terrateam GitHub App</button>
+                  </form>
+               </div>
+            </div>
+         </div>
+         <div class="mt-4">
+            <h4 class="alt-h4 text-gray-light">Support</h4>
+            <div class="d-flex flex-justify-center mt-2">
+               <a href="https://terrateam.io/docs/" class="btn btn-outline mr-2">Docs</a>
+               <a href="https://terrateam.io/slack" class="btn btn-outline mr-2">Slack</a>
+               <a href="https://github.com/terrateamio/terrateam" class="btn btn-outline mr-2">GitHub</a>
+               <a href="mailto:support@terrateam.io" class="btn btn-outline">Email</a>
+            </div>
+         </div>
+      </div>
+   </body>
+</html>

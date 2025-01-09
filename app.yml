@@ -1,0 +1,24 @@
+default_events:
+  - issue_comment
+  - issues
+  - pull_request
+  - pull_request_review
+  - pull_request_review_comment
+  - push
+  - workflow_job
+  - workflow_run
+default_permissions:
+  actions: write
+  checks: read
+  contents: write
+  issues: write
+  metadata: read
+  pull_requests: write
+  statuses: write
+  members: read
+  secrets: write
+  emails: read
+name: change-me
+url: https://terrateam.io/
+description: Terrateam is a platform for orchestrating, standardizing, and delivering infrastructure code with Terraform, OpenTofu, CDKTF, and Terragrunt.
+public: false
