@@ -20,5 +20,5 @@ default_permissions:
   emails: read
 name: change-me
 url: https://terrateam.io/
-description: Terrateam is a platform for orchestrating, standardizing, and delivering infrastructure code with Terraform, OpenTofu, CDKTF, and Terragrunt.
+description: Open-source infrastructure automation using familiar GitHub workflows with Terraform, OpenTofu, CDKTF, Terragrunt, and Pulumi.
 public: false
