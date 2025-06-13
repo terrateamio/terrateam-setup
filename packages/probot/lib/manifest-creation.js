@@ -91,6 +91,10 @@ class ManifestCreation {
         const githubHost = process.env.GHE_HOST || `github.com`;
         return `${process.env.GHE_PROTOCOL || "https"}://${githubHost}${process.env.GH_ORG ? "/organizations/".concat(process.env.GH_ORG) : ""}/settings/apps/new`;
     }
+    get baseCreateAppUrl() {
+        const githubHost = process.env.GHE_HOST || `github.com`;
+        return `${process.env.GHE_PROTOCOL || "https"}://${githubHost}/settings/apps/new`;
+    }
 }
 exports.ManifestCreation = ManifestCreation;
 //# sourceMappingURL=manifest-creation.js.map

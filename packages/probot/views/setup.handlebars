@@ -7,36 +7,74 @@
       <title>Terrateam Setup</title>
       <link rel="icon" href="/probot/static/logo.svg">
       <link rel="stylesheet" href="/probot/static/primer.css">
+      <link rel="stylesheet" href="/probot/static/terrateam-setup.css">
    </head>
-   <body class="height-full bg-gray-light">
-      <div class="d-flex flex-column flex-justify-center flex-items-center text-center height-full">
-         <img src="/probot/static/logo.svg" alt="Terrateam Logo" width="100" class="mb-6">
-         <div class="box-shadow rounded-2 border p-6 bg-white">
-            <h1>
-               Welcome to Terrateam
-            </h1>
-            <div class="text-center mt-3">
-               <h3>Create your private GitHub app for Terrateam by clicking the button below.</h3>
-               <h3>Once it's created, you'll be automatically redirected back here to continue the setup.</h3>
-	       <hr>
-               <h3>This Terrateam app will be created in the {{ orgName }} GitHub organization.</h3>
-               <br>
-               <div class="d-flex flex-justify-center mt-2">
-                  <form action="{{ createAppUrl }}" method="post" class="d-flex flex-items-center">
-                     <button class="btn btn-outline" name="manifest" id="manifest" value='{{ manifest }}' >Create Terrateam GitHub App</button>
-                  </form>
+   <body>
+      <div class="setup-container">
+         <div class="setup-card">
+            <img src="/probot/static/logo.svg" alt="Terrateam Logo" class="logo">
+            <h1 class="setup-title">Welcome to Terrateam</h1>
+            <h2 class="setup-subtitle">Get started with Terraform in minutes</h2>
+	    <p class="setup-description">Terrateam brings GitOps workflows to your infrastructure.</p>
+            <p class="help-text">Need help? <a href="https://terrateam.io/slack" class="help-link" target="_blank">Join our Slack community</a></p>
+            <div class="divider"></div>
+               
+            <div class="form-section">
+               <div class="optional-info">
+                  <p class="optional-header">Help us improve Terrateam <span class="optional-badge">(optional)</span></p>
+                  <p class="optional-description">We ask for your contact info so we can offer support, understand how Terrateam is used in real-world setups, and prioritize improvements that matter. It's never used for marketing and never leaves your system unless you choose to send it.</p>
                </div>
+               
+               <label for="first-name" class="form-label">First Name <span class="optional-text">(optional)</span></label>
+               <input type="text" id="first-name" name="first-name" class="form-input" placeholder="First Name">
+               
+               <label for="last-name" class="form-label">Last Name <span class="optional-text">(optional)</span></label>
+               <input type="text" id="last-name" name="last-name" class="form-input" placeholder="Last Name">
+               
+               <label for="email" class="form-label">Email <span class="optional-text">(optional)</span></label>
+               <input type="email" id="email" name="email" class="form-input" placeholder="your@email.com">
             </div>
+
+            <button type="button" id="next-btn" class="btn-primary">Next</button>
          </div>
-         <div class="mt-4">
-            <h4 class="alt-h4 text-gray-light">Support</h4>
-            <div class="d-flex flex-justify-center mt-2">
-               <a href="https://terrateam.io/docs/" class="btn btn-outline mr-2">Docs</a>
-               <a href="https://terrateam.io/slack" class="btn btn-outline mr-2">Slack</a>
-               <a href="https://github.com/terrateamio/terrateam" class="btn btn-outline mr-2">GitHub</a>
-               <a href="mailto:support@terrateam.io" class="btn btn-outline">Email</a>
+         <div class="support-section">
+            <h4 class="support-title">Support</h4>
+            <div class="support-links">
+               <a href="https://terrateam.io/docs/" class="support-link">Docs</a>
+               <a href="https://terrateam.io/slack" class="support-link">Slack</a>
+               <a href="https://github.com/terrateamio/terrateam" class="support-link">GitHub</a>
+               <a href="mailto:support@terrateam.io" class="support-link">Email</a>
             </div>
          </div>
       </div>
+      
+      <!-- Fixed help link -->
+      <div class="fixed-help">
+         <a href="https://terrateam.io/slack" class="fixed-help-link" target="_blank">
+            Need help? Join Slack
+         </a>
+      </div>
+      
+      <script>
+         document.getElementById('next-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const firstNameInput = document.getElementById('first-name');
+            const lastNameInput = document.getElementById('last-name');
+            const emailInput = document.getElementById('email');
+            
+            const firstNameValue = firstNameInput.value.trim();
+            const lastNameValue = lastNameInput.value.trim();
+            const emailValue = emailInput.value.trim();
+            
+            // Store form data in session storage for next page
+            sessionStorage.setItem('firstName', firstNameValue);
+            sessionStorage.setItem('lastName', lastNameValue);
+            sessionStorage.setItem('email', emailValue);
+            
+            // Navigate to app setup screen
+            window.location.href = '/probot/app-setup';
+         });
+      </script>
    </body>
 </html>

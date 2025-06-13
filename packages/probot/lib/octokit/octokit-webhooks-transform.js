@@ -1,19 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.webhookTransform = void 0;
-const context_1 = require("../context");
-/**
- * Probot's transform option, which extends the `event` object that is passed
- * to webhook event handlers by `@octokit/webhooks`
- * @see https://github.com/octokit/webhooks.js/#constructor
- */
-async function webhookTransform(state, event) {
-    const log = state.log.child({ name: "event", id: event.id });
-    const octokit = (await state.octokit.auth({
-        type: "event-octokit",
-        event,
-    }));
-    return new context_1.Context(event, octokit, log);
-}
+exports.addEventHandler = exports.webhookTransform = void 0;
+
+// Minimal webhook transform for setup app
+const webhookTransform = () => {
+    return (event, eventPayload) => {
+        return { event, payload: eventPayload };
+    };
+};
 exports.webhookTransform = webhookTransform;
-//# sourceMappingURL=octokit-webhooks-transform.js.map
+
+const addEventHandler = () => {
+    // No-op for setup app
+};
+exports.addEventHandler = addEventHandler;
