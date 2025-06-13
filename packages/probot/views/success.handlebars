@@ -4,92 +4,368 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta http-equiv="X-UA-Compatible" content="ie=edge">
-      <title>Terrateam Setup</title>
+      <title>Terrateam Setup - Success</title>
       <link rel="icon" href="/probot/static/logo.svg">
       <link rel="stylesheet" href="/probot/static/primer.css">
+      <link rel="stylesheet" href="/probot/static/terrateam-setup.css">
    </head>
-   <style>
-      .warning {
-      display: block;
-      padding: 6px;
-      margin: 6px;
-      border-radius: 3px;
-      border: 1px solid rgb(180,180,180);
-      background-color: rgb(255, 232, 232);
-      }
-   </style>
-   <body class="height-full bg-gray-light">
-      <div class="d-flex flex-column flex-justify-center flex-items-center text-center height-full">
-         <img src="/probot/static/logo.svg" alt="Terrateam Logo" width="100" class="mb-6">
-<div class="box-shadow rounded-2 border p-6 bg-white">
-   <div class="">
-      <h1 class="alt-h3 mb-2 text-center">
-         Success!
-      </h1>
-      <h2 class="alt-h3 mb-2 text-center">
-         Your GitHub Application has been created.
-      </h2>
-      <h2 class="alt-h3 mb-2 text-center">
-         Application URL: <a href="{{ html_url }}" target="_blank">{{ html_url }}</a>
-      </h2>
-      <hr>
-      <h3 class="alt-h3 mb-2 text-center" style="font-size:1.5em;">
-         Important:
-      </h3>
-      <h3 class="alt-h3 mb-2 text-center" style="font-size:1.5em;">
-         Do not install the application yet!<br>The Terrateam server must be fully deployed and running before you can register installations.
-      </h3>
-      <hr>
-      <h3 class="alt-h3 mb-2 text-left">
-         What to do next:
-      </h3>
-      <h3 class="alt-h3 ml-4 mb-2 text-left">
-         <ol type="1">
-            <li>Bookmark or copy the GitHub Application URL for future access.</li>
-            <li>Add your GitHub Application settings to your `.env` file.</li>
-            <li>Follow the remaining Terrateam deployment steps to get the server running.</li>
-         </ol>
-      </h3>
-   </div>
-</div>
-         <div class="mt-3">
-            <h3 class="alt-h3 mb-2 text-center">
-               GitHub Application settings
-            </h3>
-         </div>
-         <textarea id="env" rows="6" cols="100">{{ env_file }}</textarea>
-         <br>
-         <div id="copyToClipboard" class="d-flex flex-justify-center btn btn-outline">
-            Copy
-         </div>
-         <div class="mt-4">
-            <div class="d-flex flex-justify-center mt-2">
-               <a href="https://terrateam.io/docs/self-hosted#deployment-steps" class="btn btn-outline">Back to Terrateam Setup Instructions</a>
+   <body>
+      <div class="setup-container">
+         <div class="setup-card">
+            <img src="/probot/static/logo.svg" alt="Terrateam Logo" class="logo">
+            <h1 class="success-title">Success!</h1>
+            <h2 class="success-subtitle">Your GitHub Application has been created</h2>
+            
+            <div class="next-steps-section">
+               <div class="next-steps-title">What to do next:</div>
+               <div class="next-steps-list">
+                  <div class="next-steps-item step-item" data-step="1">
+                     <div class="step-header" onclick="toggleStep(1)">
+                        <div class="step-number">1</div>
+                        <div class="step-title-text">Important Setup Warning</div>
+                        <div class="step-chevron">▼</div>
+                     </div>
+                     <div class="step-content" id="step-1-content">
+                        <div class="step-description">
+                           <div class="warning-inline-step">
+                              ⚠️ <strong>Important:</strong> Do not install the GitHub application yet! The Terrateam server must be fully deployed and running before you can register installations. You'll install this in step 4 after the server is ready.
+                           </div>
+                        </div>
+                        <button class="next-step-btn" onclick="completeStep(1)">Next</button>
+                     </div>
+                  </div>
+                  <div class="next-steps-item step-item" data-step="2">
+                     <div class="step-header" onclick="toggleStep(2)">
+                        <div class="step-number">2</div>
+                        <div class="step-title-text">Copy these settings to your .env file</div>
+                        <div class="step-chevron">▶</div>
+                     </div>
+                     <div class="step-content" id="step-2-content" style="display: none;">
+                        <div class="step-description">
+                           <strong>Copy these settings to your `.env` file</strong>
+                           <div class="env-inline-section">
+                              <textarea id="env" class="env-textarea">{{ env_file }}</textarea>
+                              <button id="copyToClipboard" class="copy-btn">Copy to Clipboard</button>
+                           </div>
+                        </div>
+                        <button class="next-step-btn" onclick="completeStep(2)">Next</button>
+                     </div>
+                  </div>
+                  <div class="next-steps-item step-item" data-step="3">
+                     <div class="step-header" onclick="toggleStep(3)">
+                        <div class="step-number">3</div>
+                        <div class="step-title-text">Deploy the Terrateam Server</div>
+                        <div class="step-chevron">▶</div>
+                     </div>
+                     <div class="step-content" id="step-3-content" style="display: none;">
+                        <div class="step-description">
+                           <strong>Deploy the Terrateam Server</strong>
+                           <div class="sub-steps">
+                              <div class="sub-step">
+                                 <strong>Stop the setup container:</strong> Press <code>Ctrl+C</code> in the terminal to stop the container
+                                 <div class="warning-inline">⚠️ Keep this browser window open for the remaining steps!</div>
+                              </div>
+                              <div class="sub-step">
+                                 <strong>Start the Terrateam Server:</strong> Get your <a href="https://dashboard.ngrok.com/get-started/your-authtoken" target="_blank">Ngrok auth token</a> and run:
+                                 <div class="code-block">
+                                    <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                                    <code>NGROK_AUTHTOKEN=&lt;YOUR-NGROK-AUTH-TOKEN&gt; \
+docker-compose up -d server</code>
+                                 </div>
+                                 <div class="sub-note">
+                                    <strong>GitHub Enterprise users:</strong> Use these commands instead:
+                                    <div class="code-block">
+                                       <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                                       <code>export TERRAT_API_BASE=https://terrateam.example.com
+export GITHUB_API_BASE_URL=https://api.github.example.com  
+export GITHUB_WEB_BASE_URL=https://github.example.com
+docker-compose up -d server</code>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="sub-step">
+                                 <strong>Wait for the server:</strong> The command will return to your shell when the server is ready
+                              </div>
+                           </div>
+                        </div>
+                        <button class="next-step-btn" onclick="completeStep(3)">Next</button>
+                     </div>
+                  </div>
+                  <div class="next-steps-item step-item" data-step="4">
+                     <div class="step-header" onclick="toggleStep(4)">
+                        <div class="step-number">4</div>
+                        <div class="step-title-text">Install and Configure</div>
+                        <div class="step-chevron">▶</div>
+                     </div>
+                     <div class="step-content" id="step-4-content" style="display: none;">
+                        <div class="step-description">
+                           <strong>Install and Configure</strong>
+                           <div class="sub-steps">
+                              <div class="sub-step">
+                                 <strong>Install the GitHub application:</strong> <a href="{{ html_url }}" target="_blank" class="app-link">Install Terrateam</a> on your organization or specific repositories
+                                 <div class="warning-inline">⚠️ Make sure the Terrateam Server is running before installing!</div>
+                              </div>
+                              <div class="sub-step">
+                                 <strong>Add the GitHub Actions workflow</strong> to your repository containing Terraform code (where you want Terrateam to operate):
+                                 <div class="workflow-steps">
+                                    <div class="workflow-step">1. Create a new branch:
+                                       <div class="code-block">
+                                          <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                                          <code>git checkout -b add-terrateam-workflow</code>
+                                       </div>
+                                    </div>
+                                    <div class="workflow-step">2. Create directory structure and download workflow:</div>
+                                    <div class="workflow-step">
+                                       <div class="code-block">
+                                          <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                                          <code>mkdir -p .github/workflows</code>
+                                       </div>
+                                    </div>
+                                    <div class="workflow-step">
+                                       <div class="code-block">
+                                          <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                                          <code>curl -o .github/workflows/terrateam.yml https://raw.githubusercontent.com/terrateamio/terrateam-example/refs/heads/main/github/actions/workflows/default/terrateam.yml</code>
+                                       </div>
+                                    </div>
+                                    <div class="workflow-step">3. Add and commit:
+                                       <div class="code-block">
+                                          <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                                          <code>git add .github/workflows/terrateam.yml && git commit -m "Add Terrateam workflow"</code>
+                                       </div>
+                                    </div>
+                                    <div class="workflow-step">4. Push the branch:
+                                       <div class="code-block">
+                                          <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                                          <code>git push origin add-terrateam-workflow</code>
+                                       </div>
+                                    </div>
+                                    <div class="workflow-step">5. Create a Pull Request on GitHub and merge it to your main branch</div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <button class="next-step-btn" onclick="completeStep(4)">Next</button>
+                     </div>
+                  </div>
+                  <div class="next-steps-item step-item" data-step="5">
+                     <div class="step-header" onclick="toggleStep(5)">
+                        <div class="step-number">5</div>
+                        <div class="step-title-text">Start Using Terrateam</div>
+                        <div class="step-chevron">▶</div>
+                     </div>
+                     <div class="step-content" id="step-5-content" style="display: none;">
+                        <div class="step-description">
+                           <strong>Start Using Terrateam</strong>
+                           <div class="sub-steps">
+                              <div class="sub-step">
+                                 Create a pull request with a Terraform code change to trigger your first plan operation
+                              </div>
+                           </div>
+                        </div>
+                        <button class="next-step-btn" onclick="completeStep(5)">Complete Setup</button>
+                     </div>
+                  </div>
+               </div>
             </div>
+            <div class="completion-section" id="completion-section" style="display: none;">
+               <div class="completion-message">
+                  <h3>Setup Complete!</h3>
+                  <p>You've successfully completed all setup steps. Terrateam is now ready to use!</p>
+               </div>
+            </div>
+            <a href="https://terrateam.io/slack" target="_blank" class="back-to-docs-btn">Need help? Join us on Slack</a>
          </div>
-         <div class="mt-4">
-            <h4 class="alt-h4 text-gray-light">
-               Support
-            </h4>
-            <div class="d-flex flex-justify-center mt-2">
-               <a href="https://terrateam.io/docs/" class="btn btn-outline mr-2">Docs</a>
-               <a href="https://terrateam.io/slack" class="btn btn-outline mr-2">Slack</a>
-               <a href="https://github.com/terrateamio/terrateam" class="btn btn-outline mr-2">GitHub</a>
-               <a href="mailto:support@terrateam.io" class="btn btn-outline">Email</a>
+         <div class="support-section">
+            <h4 class="support-title">Support</h4>
+            <div class="support-links">
+               <a href="https://terrateam.io/docs/" class="support-link">Docs</a>
+               <a href="https://terrateam.io/slack" class="support-link">Slack</a>
+               <a href="https://github.com/terrateamio/terrateam" class="support-link">GitHub</a>
+               <a href="mailto:support@terrateam.io" class="support-link">Email</a>
             </div>
          </div>
       </div>
+      
+      <!-- Fixed help link -->
+      <div class="fixed-help">
+         <a href="https://terrateam.io/slack" class="fixed-help-link" target="_blank">
+            Need help? Join Slack
+         </a>
+      </div>
+      
       <script>
-         const copyBtn = document.getElementById('copyToClipboard');
-         copyBtn.addEventListener('click', function handleClick() {
-           copyBtn.textContent = 'Copied!';
+         // State management for steps
+         let currentStep = 1;
+         let completedSteps = [];
+         
+         // Initialize on page load
+         document.addEventListener('DOMContentLoaded', function() {
+            loadState();
+            updateStepVisibility();
+            setupCopyButton();
          });
-         document.getElementById('copyToClipboard').addEventListener('click', function() {
-           var text = document.getElementById('env');
-           text.select();
-           document.execCommand('copy');
-             window.getSelection().removeAllRanges();
-         })
+         
+         // Function to reset setup state (for debugging)
+         function resetSetupState() {
+            localStorage.removeItem('terrateam-setup-state');
+            currentStep = 1;
+            completedSteps = [];
+            updateStepVisibility();
+         }
+         
+         // Load state from localStorage
+         function loadState() {
+            const savedState = localStorage.getItem('terrateam-setup-state');
+            if (savedState) {
+               const state = JSON.parse(savedState);
+               currentStep = state.currentStep || 1;
+               completedSteps = state.completedSteps || [];
+            }
+         }
+         
+         // Save state to localStorage
+         function saveState() {
+            const state = {
+               currentStep: currentStep,
+               completedSteps: completedSteps
+            };
+            localStorage.setItem('terrateam-setup-state', JSON.stringify(state));
+         }
+         
+         // Toggle step visibility (only one open at a time)
+         function toggleStep(stepNumber) {
+            const content = document.getElementById(`step-${stepNumber}-content`);
+            const chevron = document.querySelector(`[data-step="${stepNumber}"] .step-chevron`);
+            
+            // Close all other steps first
+            for (let i = 1; i <= 5; i++) {
+               if (i !== stepNumber) {
+                  const otherContent = document.getElementById(`step-${i}-content`);
+                  const otherChevron = document.querySelector(`[data-step="${i}"] .step-chevron`);
+                  otherContent.style.display = 'none';
+                  otherChevron.textContent = '▶';
+               }
+            }
+            
+            // Toggle the clicked step
+            if (content.style.display === 'none') {
+               content.style.display = 'block';
+               chevron.textContent = '▼';
+            } else {
+               content.style.display = 'none';
+               chevron.textContent = '▶';
+            }
+         }
+         
+         // Complete a step and move to next
+         function completeStep(stepNumber) {
+            if (!completedSteps.includes(stepNumber)) {
+               completedSteps.push(stepNumber);
+            }
+            
+            // Mark step as completed visually
+            const stepItem = document.querySelector(`[data-step="${stepNumber}"]`);
+            stepItem.classList.add('completed');
+            
+            if (stepNumber < 5) {
+               currentStep = stepNumber + 1;
+               // Collapse current step and expand next
+               toggleStep(stepNumber);
+               toggleStep(currentStep);
+            } else {
+               // Show completion section
+               document.getElementById('completion-section').style.display = 'block';
+               toggleStep(stepNumber);
+            }
+            
+            saveState();
+            updateStepVisibility();
+         }
+         
+         // Update step visibility based on current state
+         function updateStepVisibility() {
+            for (let i = 1; i <= 5; i++) {
+               const stepItem = document.querySelector(`[data-step="${i}"]`);
+               const content = document.getElementById(`step-${i}-content`);
+               const chevron = document.querySelector(`[data-step="${i}"] .step-chevron`);
+               
+               if (completedSteps.includes(i)) {
+                  stepItem.classList.add('completed');
+               }
+               
+               if (i === currentStep) {
+                  content.style.display = 'block';
+                  chevron.textContent = '▼';
+               } else {
+                  content.style.display = 'none';
+                  chevron.textContent = '▶';
+               }
+            }
+            
+            // Show completion if all steps are done
+            if (completedSteps.length === 5) {
+               document.getElementById('completion-section').style.display = 'block';
+            }
+         }
+         
+         // Setup copy button functionality
+         function setupCopyButton() {
+            const copyBtn = document.getElementById('copyToClipboard');
+            if (copyBtn) {
+               copyBtn.addEventListener('click', function() {
+                  const textArea = document.getElementById('env');
+                  
+                  // Select and copy the text
+                  textArea.select();
+                  textArea.setSelectionRange(0, 99999); // For mobile devices
+                  
+                  try {
+                     document.execCommand('copy');
+                     copyBtn.textContent = 'Copied!';
+                     copyBtn.classList.add('copied');
+                     
+                     // Reset button after 2 seconds
+                     setTimeout(() => {
+                        copyBtn.textContent = 'Copy to Clipboard';
+                        copyBtn.classList.remove('copied');
+                     }, 2000);
+                  } catch (err) {
+                     console.error('Failed to copy text: ', err);
+                  }
+                  
+                  // Clear selection
+                  window.getSelection().removeAllRanges();
+               });
+            }
+         }
+
+         function copyCodeBlock(button) {
+            const codeBlock = button.parentNode;
+            const code = codeBlock.querySelector('code');
+            const text = code.textContent;
+            
+            // Create a temporary textarea to copy the text
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+               document.execCommand('copy');
+               button.textContent = 'Copied!';
+               button.classList.add('copied');
+               
+               // Reset button after 2 seconds
+               setTimeout(() => {
+                  button.textContent = 'Copy';
+                  button.classList.remove('copied');
+               }, 2000);
+            } catch (err) {
+               console.error('Failed to copy code: ', err);
+            }
+            
+            document.body.removeChild(textarea);
+         }
       </script>
    </body>
 </html>

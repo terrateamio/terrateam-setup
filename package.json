@@ -1,12 +1,9 @@
 {
   "name": "terrateam-setup",
   "scripts": {
-    "prestart": "cross-env-shell '[ ! $GH_ORG ] && echo \"Error: GH_ORG is not set\" && exit 1 || echo \"GH_ORG is set\"'",
-    "start": "cross-env GITHUB_ORG=${GITHUB_ORG} probot run -H 0.0.0.0 ./index.js"
+    "start": "probot run -H 0.0.0.0 ./index.js"
   },
   "dependencies": {
-    "cross-env": "^7.0.3",
-    "cross-env-shell": "^7.0.3",
     "probot": "file:./packages/probot"
   },
   "engines": {
