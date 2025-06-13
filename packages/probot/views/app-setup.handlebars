@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" class="height-full" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Terrateam Setup - Create GitHub App</title>
+      <link rel="icon" href="/probot/static/logo.svg">
+      <link rel="stylesheet" href="/probot/static/primer.css">
+      <link rel="stylesheet" href="/probot/static/terrateam-setup.css">
+   </head>
+   <body>
+      <div class="setup-container">
+         <div class="setup-card">
+            <img src="/probot/static/logo.svg" alt="Terrateam Logo" class="logo">
+            <h1 class="app-setup-title">Create GitHub App</h1>
+            <h2 class="setup-subtitle">Let's create your private GitHub app</h2>
+            <p class="setup-description">This will enable Terrateam to work with your repositories.</p>
+            <div class="divider"></div>
+               
+            <div class="form-section">
+               <label for="github-org" class="form-label">GitHub Organization <span class="optional-text">(optional)</span></label>
+               <input type="text" id="github-org" name="github-org" class="form-input" placeholder="Leave blank for personal account" value="{{ orgName }}">
+               
+               <div class="checkbox-container">
+                  <input type="checkbox" id="onboarding-call" name="onboarding-call" class="checkbox-input" checked>
+                  <label for="onboarding-call" class="checkbox-label">
+                     <strong>Opt in to a free technical onboarding call.</strong><br>
+                     <span class="checkbox-subtitle">No sales deck. You won't be subscribed to any marketing communications.</span>
+                  </label>
+               </div>
+            </div>
+
+            <form id="create-app-form" method="post">
+               <input type="hidden" name="manifest" value='{{ manifest }}'>
+               <button type="submit" class="btn-primary">Create GitHub application</button>
+            </form>
+         </div>
+         <div class="support-section">
+            <h4 class="support-title">Support</h4>
+            <div class="support-links">
+               <a href="https://terrateam.io/docs/" class="support-link">Docs</a>
+               <a href="https://terrateam.io/slack" class="support-link">Slack</a>
+               <a href="https://github.com/terrateamio/terrateam" class="support-link">GitHub</a>
+               <a href="mailto:support@terrateam.io" class="support-link">Email</a>
+            </div>
+         </div>
+      </div>
+      
+      <!-- Fixed help link -->
+      <div class="fixed-help">
+         <a href="https://terrateam.io/slack" class="fixed-help-link" target="_blank">
+            Need help? Join Slack
+         </a>
+      </div>
+      
+      <script>
+         document.getElementById('create-app-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const orgInput = document.getElementById('github-org');
+            const onboardingInput = document.getElementById('onboarding-call');
+            
+            const orgValue = orgInput.value.trim();
+            const onboardingValue = onboardingInput.checked;
+            
+            // Get user data from session storage
+            const firstName = sessionStorage.getItem('firstName') || '';
+            const lastName = sessionStorage.getItem('lastName') || '';
+            const email = sessionStorage.getItem('email') || '';
+            
+            // Create URL with form data that will be passed back after GitHub app creation
+            const currentManifest = JSON.parse('{{{ manifest }}}');
+            const formData = new URLSearchParams();
+            if (firstName) formData.append('firstName', firstName);
+            if (lastName) formData.append('lastName', lastName);
+            if (email) formData.append('email', email);
+            formData.append('onboardingCall', onboardingValue);
+            
+            // Update the redirect_url in the manifest to include our form data
+            const updatedManifest = {...currentManifest};
+            const baseRedirectUrl = updatedManifest.redirect_url;
+            updatedManifest.redirect_url = `${baseRedirectUrl}?${formData.toString()}`;
+            
+            // Update the manifest input with our modified version
+            document.querySelector('input[name="manifest"]').value = JSON.stringify(updatedManifest);
+            
+            // Create GitHub app - use org if specified, otherwise default to personal account
+            if (orgValue) {
+               // Keep the organization URL as-is
+               this.action = '{{ createAppUrl }}';
+            } else {
+               // Default to personal account by removing organization path
+               const baseUrl = '{{ createAppUrl }}'.replace(/\/organizations\/[^\/]*/, '');
+               this.action = baseUrl;
+            }
+            this.submit();
+         });
+      </script>
+   </body>
+</html>

@@ -1,12 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createNodeMiddleware = void 0;
-const webhooks_1 = require("@octokit/webhooks");
-function createNodeMiddleware(appFn, { probot, webhooksPath }) {
-    probot.load(appFn);
-    return (0, webhooks_1.createNodeMiddleware)(probot.webhooks, {
-        path: webhooksPath || "/",
-    });
-}
+
+// Minimal middleware stub for setup app
+const createNodeMiddleware = () => {
+    throw new Error("Node middleware not supported in setup mode");
+};
 exports.createNodeMiddleware = createNodeMiddleware;
-//# sourceMappingURL=create-node-middleware.js.map

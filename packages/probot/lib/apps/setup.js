@@ -17,22 +17,77 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
     const setup = new manifest_creation_1.ManifestCreation();
     const route = getRouter();
     route.use((0, logging_middleware_1.getLoggingMiddleware)(app.log));
+    route.use(body_parser_1.default.urlencoded({ extended: true }));
     printWelcomeMessage(app, host, port);
     route.get("/probot", async (req, res) => {
+        // First screen - welcome and email opt-in
+        res.render("setup.handlebars");
+    });
+    route.get("/probot/telemetry", async (req, res) => {
+        // Handle telemetry submission
+        const { email, firstName, lastName, githubAccount } = req.query;
+        if (email || githubAccount) {
+            try {
+                const https = require('https');
+                const params = new URLSearchParams();
+                if (email) params.append('email', email);
+                if (githubAccount) params.append('github', githubAccount);
+                const url = `https://telemetry.terrateam.io/event/terrateam-setup/opt-in?${params.toString()}`;
+                
+                https.get(url, (telemetryRes) => {
+                    app.log.info(`Telemetry sent for ${firstName || ''} ${lastName || ''} (${email || githubAccount}), status: ${telemetryRes.statusCode}`);
+                }).on('error', (error) => {
+                    app.log.error('Telemetry request failed:', error);
+                });
+            } catch (error) {
+                app.log.error('Telemetry error:', error);
+            }
+        }
+        res.json({ success: true });
+    });
+    route.get("/probot/app-setup", async (req, res) => {
+        // Second screen - GitHub app creation
         const baseUrl = getBaseUrl(req);
         const pkg = setup.pkg;
         const manifest = setup.getManifest(pkg, baseUrl);
-        const createAppUrl = setup.createAppUrl;
-        const orgName = process.env.GH_ORG || 'GitHub Organization not specified';
-        // Pass the manifest to be POST'd
-        res.render("setup.handlebars", { pkg, createAppUrl, manifest, orgName });
+        const createAppUrl = setup.baseCreateAppUrl;
+        const orgName = process.env.GH_ORG || '';
+        res.render("app-setup.handlebars", { pkg, createAppUrl, manifest, orgName });
     });
     route.get("/probot/success", async (req, res) => {
-        const { code } = req.query;
+        const { code, firstName, lastName, email, onboardingCall } = req.query;
         try {
         		const response = await setup.createAppFromCode(code);
-            const { html_url, id, client_id, client_secret, webhook_secret, pem } = response.data;
+            const { html_url, id, client_id, client_secret, webhook_secret, pem, owner } = response.data;
 						const env_file = fs.readFileSync((path_1.default.join(process.cwd(), ".env")));
+            
+            // Send telemetry with authenticated GitHub username and user data
+            try {
+                const githubUsername = owner?.login;
+                const shouldSendTelemetry = onboardingCall === 'true';
+                
+                if (githubUsername && shouldSendTelemetry) {
+                    const https = require('https');
+                    const params = new URLSearchParams();
+                    params.append('github', githubUsername);
+                    if (email) params.append('email', email);
+                    if (firstName) params.append('firstName', firstName);
+                    if (lastName) params.append('lastName', lastName);
+                    
+                    const url = `https://telemetry.terrateam.io/event/terrateam-setup/opt-in?${params.toString()}`;
+                    
+                    https.get(url, (telemetryRes) => {
+                        app.log.info(`Telemetry sent for GitHub user: ${githubUsername} (${firstName || ''} ${lastName || ''}, ${email || 'no email'}), status: ${telemetryRes.statusCode}`);
+                    }).on('error', (error) => {
+                        app.log.error('Telemetry request failed:', error);
+                    });
+                } else if (githubUsername) {
+                    app.log.info(`GitHub user ${githubUsername} opted out of telemetry`);
+                }
+            } catch (telemetryError) {
+                app.log.error('Telemetry error:', telemetryError);
+            }
+            
             res.render("success.handlebars", { env_file, html_url, id, client_id, client_secret, webhook_secret, pem });
         }
         catch (e) {

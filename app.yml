@@ -20,5 +20,5 @@ default_permissions:
   emails: read
 name: change-me
 url: https://terrateam.io/
-description: Open-source infrastructure automation using familiar GitHub workflows with Terraform, OpenTofu, CDKTF, Terragrunt, and Pulumi.
+description: Terrateam is the flexible GitOps orchestration engine for Terraform, OpenTofu, CDKTF, Terragrunt, and Pulumi.
 public: false
