@@ -61,6 +61,42 @@ class ManifestCreation {
         return generatedManifest;
     }
     async createAppFromCode(code) {
+        // Development mode - bypass GitHub API and use mock data
+        if (process.env.TERRATEAM_DEV_MODE === 'true') {
+            console.log('Development mode: Using mock GitHub app data');
+            
+            const mockResponse = {
+                data: {
+                    id: 123456,
+                    client_id: 'Iv1.mock-client-id-dev',
+                    client_secret: 'mock-client-secret-for-development',
+                    webhook_secret: 'mock-webhook-secret-dev',
+                    pem: `-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEA2mock+private+key+for+development+mode+only
+This is a mock private key for development purposes only.
+Do not use this in production!
+-----END RSA PRIVATE KEY-----`,
+                    html_url: 'https://github.com/apps/terrateam-dev-app',
+                    owner: {
+                        login: 'dev-user'
+                    }
+                }
+            };
+            
+            // Still update the .env file with mock values for development
+            const { id, client_id, client_secret, webhook_secret, pem } = mockResponse.data;
+            await this.updateEnv({
+                GITHUB_APP_ID: `${id.toString()}`,
+                GITHUB_APP_PEM: `${pem}`,
+                GITHUB_WEBHOOK_SECRET: `${webhook_secret}`,
+                GITHUB_APP_CLIENT_ID: `${client_id}`,
+                GITHUB_APP_CLIENT_SECRET: `${client_secret}`,
+            });
+            
+            return mockResponse;
+        }
+        
+        // Production mode - normal GitHub API call
         const octokit = new probot_octokit_1.ProbotOctokit();
         const options = {
             code,

@@ -60,31 +60,75 @@
                      <div class="step-content" id="step-3-content" style="display: none;">
                         <div class="step-description">
                            <strong>Deploy the Terrateam Server</strong>
-                           <div class="sub-steps">
-                              <div class="sub-step">
-                                 <strong>Stop the setup container:</strong> Press <code>Ctrl+C</code> in the terminal to stop the container
-                                 <div class="warning-inline">⚠️ Keep this browser window open for the remaining steps!</div>
+                           
+                           <!-- Deployment method selection -->
+                           <div class="deployment-method-section">
+                              <div class="deployment-method-title">Choose your deployment method:</div>
+                              <div class="deployment-method-options">
+                                 <label class="deployment-option">
+                                    <input type="radio" name="deployment-method" value="docker-compose" checked onchange="showDeploymentInstructions()">
+                                    <span class="deployment-option-text">Docker Compose (Development/Testing)</span>
+                                 </label>
+                                 <label class="deployment-option">
+                                    <input type="radio" name="deployment-method" value="production" onchange="showDeploymentInstructions()">
+                                    <span class="deployment-option-text">Production Deployment (Kubernetes, ECS, etc.)</span>
+                                 </label>
                               </div>
-                              <div class="sub-step">
-                                 <strong>Start the Terrateam Server:</strong> Get your <a href="https://dashboard.ngrok.com/get-started/your-authtoken" target="_blank">Ngrok auth token</a> and run:
-                                 <div class="code-block">
-                                    <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
-                                    <code>NGROK_AUTHTOKEN=&lt;YOUR-NGROK-AUTH-TOKEN&gt; \
-docker-compose up -d server</code>
+                           </div>
+
+                           <!-- Docker Compose Instructions -->
+                           <div id="docker-compose-instructions" class="deployment-instructions">
+                              <div class="sub-steps">
+                                 <div class="sub-step">
+                                    <strong>Stop the setup container:</strong> Press <code>Ctrl+C</code> in the terminal to stop the container
+                                    <div class="warning-inline">⚠️ Keep this browser window open for the remaining steps!</div>
                                  </div>
-                                 <div class="sub-note">
-                                    <strong>GitHub Enterprise users:</strong> Use these commands instead:
+                                 <div class="sub-step">
+                                    <strong>Start the Terrateam Server:</strong> Get your <a href="https://dashboard.ngrok.com/get-started/your-authtoken" target="_blank">Ngrok auth token</a> and run:
                                     <div class="code-block">
                                        <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
-                                       <code>export TERRAT_API_BASE=https://terrateam.example.com
+                                       <code>NGROK_AUTHTOKEN=&lt;YOUR-NGROK-AUTH-TOKEN&gt; \
+docker-compose up -d server</code>
+                                    </div>
+                                    <div class="sub-note">
+                                       <strong>GitHub Enterprise users:</strong> Use these commands instead:
+                                       <div class="code-block">
+                                          <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                                          <code>export TERRAT_API_BASE=https://terrateam.example.com
 export GITHUB_API_BASE_URL=https://api.github.example.com  
 export GITHUB_WEB_BASE_URL=https://github.example.com
 docker-compose up -d server</code>
+                                       </div>
                                     </div>
                                  </div>
+                                 <div class="sub-step">
+                                    <strong>Wait for the server:</strong> The command will return to your shell when the server is ready
+                                 </div>
                               </div>
-                              <div class="sub-step">
-                                 <strong>Wait for the server:</strong> The command will return to your shell when the server is ready
+                           </div>
+
+                           <!-- Production Deployment Instructions -->
+                           <div id="production-instructions" class="deployment-instructions" style="display: none;">
+                              <div class="production-deployment-info">
+                                 <div class="production-info-box">
+                                    <h4>Production Deployment</h4>
+                                    <p>For production deployments using Kubernetes, ECS, or other infrastructure, please refer to our comprehensive deployment documentation.</p>
+                                    
+                                    <div class="production-requirements">
+                                       <strong>Your deployment will need:</strong>
+                                       <ul>
+                                          <li>The environment variables from Step 2</li>
+                                          <li>A publicly accessible HTTPS endpoint</li>
+                                          <li>The Terrateam server running and healthy</li>
+                                       </ul>
+                                    </div>
+                                    
+                                    <div class="documentation-link-section">
+                                       <a href="https://docs.terrateam.io/self-hosted" target="_blank" class="docs-link-btn">
+                                          View Production Deployment Guide
+                                       </a>
+                                    </div>
+                                 </div>
                               </div>
                            </div>
                         </div>
@@ -365,6 +409,21 @@ docker-compose up -d server</code>
             }
             
             document.body.removeChild(textarea);
+         }
+
+         // Show/hide deployment instructions based on selected method
+         function showDeploymentInstructions() {
+            const selectedMethod = document.querySelector('input[name="deployment-method"]:checked').value;
+            const dockerInstructions = document.getElementById('docker-compose-instructions');
+            const productionInstructions = document.getElementById('production-instructions');
+            
+            if (selectedMethod === 'docker-compose') {
+               dockerInstructions.style.display = 'block';
+               productionInstructions.style.display = 'none';
+            } else {
+               dockerInstructions.style.display = 'none';
+               productionInstructions.style.display = 'block';
+            }
          }
       </script>
    </body>
