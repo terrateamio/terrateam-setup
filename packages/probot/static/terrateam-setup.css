@@ -861,4 +861,152 @@ code {
 .workflow-note strong {
   color: #0369a1;
 }
+
+/* Deployment method selection styles */
+.deployment-method-section {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f8fffe;
+  border: 1px solid #c6f6d5;
+  border-radius: 8px;
+}
+
+.deployment-method-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #276749;
+  margin-bottom: 0.75rem;
+}
+
+.deployment-method-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.deployment-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.deployment-option:hover {
+  background: #e6fffa;
+}
+
+.deployment-option input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #009BFF;
+}
+
+.deployment-option-text {
+  font-size: 0.95rem;
+  color: #2f855a;
+  font-weight: 500;
+}
+
+.deployment-instructions {
+  margin-top: 1rem;
+}
+
+/* Production deployment specific styles */
+.production-deployment-info {
+  text-align: left;
+}
+
+.production-info-box {
+  background: #f0f9ff;
+  border: 2px solid #0ea5e9;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.production-info-box h4 {
+  color: #0c4a6e;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+}
+
+.production-info-box p {
+  color: #0369a1;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.production-requirements {
+  margin-bottom: 1.5rem;
+}
+
+.production-requirements strong {
+  color: #0c4a6e;
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.production-requirements ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: #0369a1;
+}
+
+.production-requirements li {
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+}
+
+.documentation-link-section {
+  text-align: center;
+}
+
+.docs-link-btn {
+  background: #009BFF;
+  color: white;
+  text-decoration: none;
+  padding: 0.875rem 1.75rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  display: inline-block;
+  transition: all 0.2s ease;
+  margin-bottom: 0.75rem;
+}
+
+.docs-link-btn:hover {
+  background: #0080d9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 155, 255, 0.3);
+}
+
+.docs-link-note {
+  font-size: 0.875rem;
+  color: #0369a1;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .deployment-method-options {
+    gap: 0.75rem;
+  }
+  
+  .deployment-option {
+    padding: 0.75rem;
+  }
+  
+  .production-info-box {
+    padding: 1.25rem;
+  }
+  
+  .docs-link-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+  }
+}
 EOF < /dev/null
