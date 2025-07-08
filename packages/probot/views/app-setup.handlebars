@@ -85,13 +85,13 @@
             // Update the manifest input with our modified version
             document.querySelector('input[name="manifest"]').value = JSON.stringify(updatedManifest);
             
-            // Create GitHub app - use org if specified, otherwise default to personal account
+            // Create GitHub app - construct proper URL based on organization input
+            const baseUrl = '{{ baseCreateAppUrl }}';
             if (orgValue) {
-               // Keep the organization URL as-is
-               this.action = '{{ createAppUrl }}';
+               // Insert the organization into the URL
+               this.action = baseUrl.replace('/settings/apps/new', `/organizations/${orgValue}/settings/apps/new`);
             } else {
-               // Default to personal account by removing organization path
-               const baseUrl = '{{ createAppUrl }}'.replace(/\/organizations\/[^\/]*/, '');
+               // Use base URL for personal account
                this.action = baseUrl;
             }
             this.submit();

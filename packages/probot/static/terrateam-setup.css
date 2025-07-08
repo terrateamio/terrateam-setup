@@ -57,7 +57,7 @@ body {
 }
 
 .setup-title {
-  font-size: 3rem;
+  font-size: 4rem;
   font-weight: 700;
   color: #1a1a1a;
   margin-bottom: 0.5rem;
@@ -65,7 +65,7 @@ body {
 }
 
 .setup-subtitle {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 500;
   color: #2d3748;
   margin-bottom: 1rem;
@@ -73,14 +73,14 @@ body {
 }
 
 .setup-description {
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   color: #4a5568;
   margin-bottom: 1rem;
   line-height: 1.6;
 }
 
 .help-text {
-  font-size: 1rem;
+  font-size: 1.33rem;
   color: #4a5568;
   margin-bottom: 2rem;
   text-align: center;
@@ -111,7 +111,7 @@ body {
 }
 
 .optional-header {
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: #2d3748;
   margin: 0 0 0.75rem 0;
@@ -123,28 +123,28 @@ body {
 .optional-badge {
   background: #667eea;
   color: white;
-  font-size: 0.75rem;
+  font-size: 1rem;
   font-weight: 500;
-  padding: 0.2rem 0.5rem;
+  padding: 0.25rem 0.6rem;
   border-radius: 12px;
 }
 
 .optional-description {
-  font-size: 0.95rem;
+  font-size: 1.27rem;
   color: #4a5568;
   line-height: 1.5;
   margin: 0;
 }
 
 .optional-text {
-  font-size: 0.875rem;
+  font-size: 1.17rem;
   color: #718096;
   font-weight: 400;
 }
 
 .form-label {
   display: block;
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   font-weight: 500;
   color: #2d3748;
   margin-bottom: 0.5rem;
@@ -160,7 +160,7 @@ body {
   padding: 1rem 1.25rem;
   border: 2px solid #e2e8f0;
   border-radius: 8px;
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   transition: all 0.2s ease;
   background: #fafafa;
   color: #2d3748;
@@ -189,14 +189,14 @@ body {
 
 .error-message {
   color: #e53e3e;
-  font-size: 0.875rem;
+  font-size: 1.17rem;
   font-weight: 500;
   margin-top: 0.5rem;
   display: block;
 }
 
 .form-hint {
-  font-size: 0.875rem;
+  font-size: 1.17rem;
   color: #718096;
   margin-top: 0.5rem;
   display: block;
@@ -217,14 +217,14 @@ body {
 }
 
 .checkbox-label {
-  font-size: 1rem;
+  font-size: 1.33rem;
   color: #4a5568;
   line-height: 1.5;
   cursor: pointer;
 }
 
 .checkbox-subtitle {
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   color: #4a5568;
   font-weight: 400;
 }
@@ -235,13 +235,13 @@ body {
   border: none;
   padding: 1.25rem 3rem;
   border-radius: 8px;
-  font-size: 1.25rem;
+  font-size: 1.67rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
   display: inline-block;
-  min-width: 180px;
+  min-width: 200px;
 }
 
 .btn-primary:hover {
@@ -260,7 +260,7 @@ body {
 }
 
 .support-title {
-  font-size: 1rem;
+  font-size: 1.33rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.8);
   margin-bottom: 1rem;
@@ -279,7 +279,7 @@ body {
   text-decoration: none;
   padding: 0.5rem 1rem;
   border-radius: 6px;
-  font-size: 0.875rem;
+  font-size: 1.17rem;
   font-weight: 500;
   transition: all 0.2s ease;
   backdrop-filter: blur(10px);
@@ -298,11 +298,11 @@ body {
   }
   
   .setup-title {
-    font-size: 2rem;
+    font-size: 2.67rem;
   }
   
   .setup-subtitle {
-    font-size: 1.1rem;
+    font-size: 1.47rem;
   }
   
   .support-links {
@@ -311,13 +311,13 @@ body {
   
   .support-link {
     padding: 0.4rem 0.8rem;
-    font-size: 0.8rem;
+    font-size: 1.07rem;
   }
 }
 
 /* App setup specific styles */
 .app-setup-title {
-  font-size: 2rem;
+  font-size: 2.67rem;
   font-weight: 700;
   color: #1a1a1a;
   margin-bottom: 0.5rem;
@@ -331,14 +331,14 @@ body {
 
 /* Success page specific styles */
 .success-title {
-  font-size: 2.5rem;
+  font-size: 3.33rem;
   font-weight: 700;
   color: #48bb78;
   margin-bottom: 0.5rem;
 }
 
 .success-subtitle {
-  font-size: 1.25rem;
+  font-size: 1.67rem;
   font-weight: 500;
   color: #2d3748;
   margin-bottom: 1.5rem;
@@ -353,7 +353,7 @@ body {
 }
 
 .app-url-label {
-  font-size: 0.875rem;
+  font-size: 1.17rem;
   font-weight: 500;
   color: #4a5568;
   margin-bottom: 0.5rem;
@@ -364,6 +364,7 @@ body {
   text-decoration: none;
   font-weight: 500;
   word-break: break-all;
+  font-size: 1.17rem;
 }
 
 .app-url-link:hover {
@@ -379,7 +380,7 @@ body {
 }
 
 .warning-title {
-  font-size: 1.25rem;
+  font-size: 1.67rem;
   font-weight: 700;
   color: #c53030;
   margin-bottom: 0.5rem;
@@ -389,7 +390,7 @@ body {
 }
 
 .warning-text {
-  font-size: 1rem;
+  font-size: 1.33rem;
   color: #742a2a;
   line-height: 1.5;
 }
@@ -404,7 +405,7 @@ body {
 }
 
 .next-steps-title {
-  font-size: 1.25rem;
+  font-size: 1.67rem;
   font-weight: 700;
   color: #276749;
   margin-bottom: 1rem;
@@ -420,7 +421,7 @@ body {
   display: flex;
   align-items: flex-start;
   margin-bottom: 0.75rem;
-  font-size: 1rem;
+  font-size: 1.33rem;
   color: #2f855a;
   line-height: 1.5;
 }
@@ -429,12 +430,12 @@ body {
   background: #48bb78;
   color: white;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.875rem;
+  font-size: 1.17rem;
   font-weight: 600;
   margin-right: 0.75rem;
   flex-shrink: 0;
@@ -448,7 +449,7 @@ body {
 
 .sub-step {
   margin: 0.75rem 0;
-  font-size: 0.95rem;
+  font-size: 1.27rem;
   color: #2f855a;
   line-height: 1.5;
 }
@@ -470,7 +471,7 @@ body {
 
 .code-block code {
   color: #68d391;
-  font-size: 0.875rem;
+  font-size: 1.17rem;
   font-weight: 500;
   white-space: pre;
   background: none;
@@ -483,7 +484,7 @@ body {
   background: #e6fffa;
   border: 1px solid #81e6d9;
   border-radius: 6px;
-  font-size: 0.875rem;
+  font-size: 1.17rem;
 }
 
 .sub-note strong {
@@ -494,7 +495,7 @@ body {
   display: inline-block;
   background: #fed7d7;
   color: #c53030;
-  font-size: 0.875rem;
+  font-size: 1.17rem;
   font-weight: 600;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
@@ -508,7 +509,7 @@ body {
   padding: 1rem;
   margin-top: 1rem;
   color: #742a2a;
-  font-size: 0.95rem;
+  font-size: 1.27rem;
   line-height: 1.5;
 }
 
@@ -522,7 +523,7 @@ code {
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 0.875rem;
+  font-size: 1.17rem;
 }
 
 .app-link {
@@ -564,7 +565,7 @@ code {
   border: none;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
-  font-size: 0.75rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -584,7 +585,7 @@ code {
 }
 
 .env-title {
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: #2d3748;
   margin-bottom: 1rem;
@@ -599,7 +600,7 @@ code {
   border: 2px solid #e2e8f0;
   border-radius: 8px;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 0.875rem;
+  font-size: 1.17rem;
   background: #f8f9fa;
   color: #2d3748;
   resize: vertical;
@@ -618,7 +619,7 @@ code {
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 6px;
-  font-size: 0.875rem;
+  font-size: 1.17rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -640,7 +641,7 @@ code {
   text-decoration: none;
   padding: 1rem 2rem;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 1.33rem;
   font-weight: 600;
   transition: all 0.2s ease;
   display: inline-block;
@@ -667,7 +668,7 @@ code {
   text-decoration: none;
   padding: 0.75rem 1.5rem;
   border-radius: 25px;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   font-weight: 600;
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
   transition: all 0.2s ease;
@@ -688,7 +689,7 @@ code {
   
   .fixed-help-link {
     padding: 0.6rem 1.2rem;
-    font-size: 0.85rem;
+    font-size: 1.13rem;
   }
 }
 /* Collapsible Step Styles */
@@ -730,14 +731,14 @@ code {
 
 .step-title-text {
   flex: 1;
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: #2f855a;
   margin-left: 0.75rem;
 }
 
 .step-chevron {
-  font-size: 1rem;
+  font-size: 1.33rem;
   color: #48bb78;
   transition: transform 0.2s ease;
   user-select: none;
@@ -750,7 +751,7 @@ code {
 }
 
 .step-description {
-  font-size: 1rem;
+  font-size: 1.33rem;
   color: #2f855a;
   line-height: 1.6;
   margin-bottom: 1.5rem;
@@ -762,7 +763,7 @@ code {
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 6px;
-  font-size: 1rem;
+  font-size: 1.33rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -786,13 +787,13 @@ code {
 
 .completion-message h3 {
   color: #276749;
-  font-size: 1.5rem;
+  font-size: 2rem;
   margin-bottom: 0.5rem;
 }
 
 .completion-message p {
   color: #2f855a;
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   margin: 0;
 }
 
@@ -808,7 +809,7 @@ code {
 .workflow-step {
   margin: 0.5rem 0;
   padding: 0.5rem 0;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   color: #2f855a;
   line-height: 1.5;
   border-bottom: 1px solid #e6fffa;
@@ -824,7 +825,7 @@ code {
   padding: 0.2rem 0.4rem;
   border-radius: 3px;
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 0.85rem;
+  font-size: 1.13rem;
 }
 
 /* Override code-block styling within workflow steps to match step 3 */
@@ -841,7 +842,7 @@ code {
 
 .workflow-steps .code-block code {
   color: #68d391;
-  font-size: 0.875rem;
+  font-size: 1.17rem;
   font-weight: 500;
   white-space: pre;
   background: none;
@@ -854,7 +855,7 @@ code {
   border-radius: 6px;
   padding: 0.75rem;
   margin-top: 1rem;
-  font-size: 0.875rem;
+  font-size: 1.17rem;
   color: #0c4a6e;
 }
 
@@ -872,7 +873,7 @@ code {
 }
 
 .deployment-method-title {
-  font-size: 1rem;
+  font-size: 1.33rem;
   font-weight: 600;
   color: #276749;
   margin-bottom: 0.75rem;
@@ -905,7 +906,7 @@ code {
 }
 
 .deployment-option-text {
-  font-size: 0.95rem;
+  font-size: 1.27rem;
   color: #2f855a;
   font-weight: 500;
 }
@@ -928,14 +929,14 @@ code {
 
 .production-info-box h4 {
   color: #0c4a6e;
-  font-size: 1.25rem;
+  font-size: 1.67rem;
   font-weight: 600;
   margin: 0 0 0.75rem 0;
 }
 
 .production-info-box p {
   color: #0369a1;
-  font-size: 1rem;
+  font-size: 1.33rem;
   line-height: 1.5;
   margin-bottom: 1rem;
 }
@@ -946,7 +947,7 @@ code {
 
 .production-requirements strong {
   color: #0c4a6e;
-  font-size: 1rem;
+  font-size: 1.33rem;
   display: block;
   margin-bottom: 0.5rem;
 }
@@ -955,11 +956,13 @@ code {
   margin: 0;
   padding-left: 1.5rem;
   color: #0369a1;
+  font-size: 1.17rem;
 }
 
 .production-requirements li {
   margin-bottom: 0.25rem;
   line-height: 1.4;
+  font-size: 1.17rem;
 }
 
 .documentation-link-section {
@@ -972,7 +975,7 @@ code {
   text-decoration: none;
   padding: 0.875rem 1.75rem;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 1.33rem;
   font-weight: 600;
   display: inline-block;
   transition: all 0.2s ease;
@@ -986,7 +989,7 @@ code {
 }
 
 .docs-link-note {
-  font-size: 0.875rem;
+  font-size: 1.17rem;
   color: #0369a1;
   font-style: italic;
 }
@@ -1006,7 +1009,7 @@ code {
   
   .docs-link-btn {
     padding: 0.75rem 1.5rem;
-    font-size: 0.95rem;
+    font-size: 1.27rem;
   }
 }
 EOF < /dev/null

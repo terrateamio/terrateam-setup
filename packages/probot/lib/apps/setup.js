@@ -68,7 +68,7 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
                 const url = `https://telemetry.terrateam.io/event/terrateam-setup/opt-in?${params.toString()}`;
                 
                 https.get(url, (telemetryRes) => {
-                    app.log.info(`Telemetry sent for ${firstName || ''} ${lastName || ''} (${email || githubAccount}), status: ${telemetryRes.statusCode}`);
+                    // Telemetry sent silently
                 }).on('error', (error) => {
                     app.log.error('Telemetry request failed:', error);
                 });
@@ -83,9 +83,9 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
         const baseUrl = getBaseUrl(req);
         const pkg = setup.pkg;
         const manifest = setup.getManifest(pkg, baseUrl);
-        const createAppUrl = setup.baseCreateAppUrl;
+        const baseCreateAppUrl = setup.baseCreateAppUrl;
         const orgName = process.env.GH_ORG || '';
-        res.render("app-setup.handlebars", { pkg, createAppUrl, manifest, orgName });
+        res.render("app-setup.handlebars", { pkg, baseCreateAppUrl, manifest, orgName });
     });
     route.get("/probot/success", async (req, res) => {
         const { code, firstName, lastName, email, onboardingCall } = req.query;
@@ -134,12 +134,12 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
                     const url = `https://telemetry.terrateam.io/event/terrateam-setup/opt-in?${params.toString()}`;
                     
                     https.get(url, (telemetryRes) => {
-                        app.log.info(`Telemetry sent for GitHub user: ${githubUsername} (${firstName || ''} ${lastName || ''}, ${email || 'no email'}), status: ${telemetryRes.statusCode}`);
+                        // Telemetry sent
                     }).on('error', (error) => {
                         app.log.error('Telemetry request failed:', error);
                     });
                 } else if (githubUsername) {
-                    app.log.info(`GitHub user ${githubUsername} opted out of telemetry`);
+                    // User opted out of telemetry
                 }
             } catch (telemetryError) {
                 app.log.error('Telemetry error:', telemetryError);

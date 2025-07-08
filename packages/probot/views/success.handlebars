@@ -84,11 +84,10 @@
                                     <div class="warning-inline">⚠️ Keep this browser window open for the remaining steps!</div>
                                  </div>
                                  <div class="sub-step">
-                                    <strong>Start the Terrateam Server:</strong> Get your <a href="https://dashboard.ngrok.com/get-started/your-authtoken" target="_blank">Ngrok auth token</a> and run:
+                                    <strong>Start the Terrateam Server:</strong> Run the following command:
                                     <div class="code-block">
                                        <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
-                                       <code>NGROK_AUTHTOKEN=&lt;YOUR-NGROK-AUTH-TOKEN&gt; \
-docker-compose up -d server</code>
+                                       <code>docker-compose up -d server</code>
                                     </div>
                                     <div class="sub-note">
                                        <strong>GitHub Enterprise users:</strong> Use these commands instead:
@@ -146,7 +145,7 @@ docker-compose up -d server</code>
                            <strong>Install and Configure</strong>
                            <div class="sub-steps">
                               <div class="sub-step">
-                                 <strong>Install the GitHub application:</strong> <a href="{{ html_url }}" target="_blank" class="app-link">Install Terrateam</a> on your organization or specific repositories
+                                 <strong>Install the GitHub application:</strong> <a href="{{ html_url }}/installations/new" target="_blank" class="app-link">Install Terrateam</a> on your organization or specific repositories
                                  <div class="warning-inline">⚠️ Make sure the Terrateam Server is running before installing!</div>
                               </div>
                               <div class="sub-step">
