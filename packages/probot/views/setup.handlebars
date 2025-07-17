@@ -22,7 +22,7 @@
             <div class="form-section">
                <div class="optional-info">
                   <p class="optional-header">Help us improve Terrateam <span class="optional-badge">(optional)</span></p>
-                  <p class="optional-description">We ask for your contact info so we can offer support, understand how Terrateam is used in real-world setups, and prioritize improvements that matter. It's never used for marketing and never leaves your system unless you choose to send it.</p>
+                  <p class="optional-description">We ask for your contact info so we can offer support, understand how Terrateam is used in real-world setups, and prioritize improvements that matter. It's never used for marketing.</p>
                </div>
                
                <label for="first-name" class="form-label">First Name <span class="optional-text">(optional)</span></label>
@@ -72,8 +72,8 @@
             sessionStorage.setItem('lastName', lastNameValue);
             sessionStorage.setItem('email', emailValue);
             
-            // Navigate to app setup screen
-            window.location.href = '/probot/app-setup';
+            // Navigate to tunnel configuration screen
+            window.location.href = '/probot/tunnel-config';
          });
       </script>
    </body>

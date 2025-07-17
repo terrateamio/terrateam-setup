@@ -308,7 +308,9 @@ docker-compose up -d server</code>
             
             // Mark step as completed visually
             const stepItem = document.querySelector(`[data-step="${stepNumber}"]`);
-            stepItem.classList.add('completed');
+            if (stepItem) {
+               stepItem.classList.add('completed');
+            }
             
             if (stepNumber < 5) {
                currentStep = stepNumber + 1;
@@ -316,9 +318,43 @@ docker-compose up -d server</code>
                toggleStep(stepNumber);
                toggleStep(currentStep);
             } else {
+               // Close all steps first, including step 5
+               for (let i = 1; i <= 5; i++) {
+                  const content = document.getElementById(`step-${i}-content`);
+                  const chevron = document.querySelector(`[data-step="${i}"] .step-chevron`);
+                  if (content) {
+                     content.style.display = 'none';
+                     content.style.visibility = 'hidden';
+                     content.style.height = '0';
+                     content.style.overflow = 'hidden';
+                  }
+                  if (chevron) {
+                     chevron.textContent = '▶';
+                  }
+               }
+               
                // Show completion section
-               document.getElementById('completion-section').style.display = 'block';
-               toggleStep(stepNumber);
+               const completionSection = document.getElementById('completion-section');
+               
+               if (completionSection) {
+                  completionSection.style.display = 'block';
+                  completionSection.style.background = '#DCFCE7';
+                  completionSection.style.border = '3px solid #48bb78';
+                  completionSection.style.marginTop = '2rem';
+                  completionSection.style.padding = '3rem';
+                  completionSection.style.fontSize = '1.5rem';
+                  
+                  // Force a reflow to ensure the changes are applied
+                  completionSection.offsetHeight;
+                  
+                  // Scroll to completion section with a delay to ensure it's rendered
+                  setTimeout(() => {
+                     window.scrollTo({
+                        top: completionSection.offsetTop - 100,
+                        behavior: 'smooth'
+                     });
+                  }, 100);
+               }
             }
             
             saveState();

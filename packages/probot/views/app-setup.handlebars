@@ -64,10 +64,12 @@
             const orgValue = orgInput.value.trim();
             const onboardingValue = onboardingInput.checked;
             
-            // Get user data from session storage
+            // Get user data and tunnel config from session storage
             const firstName = sessionStorage.getItem('firstName') || '';
             const lastName = sessionStorage.getItem('lastName') || '';
             const email = sessionStorage.getItem('email') || '';
+            const tunnelConfig = sessionStorage.getItem('tunnelConfig') || '{}';
+            const sessionId = sessionStorage.getItem('sessionId') || '';
             
             // Create URL with form data that will be passed back after GitHub app creation
             const currentManifest = JSON.parse('{{{ manifest }}}');
@@ -76,6 +78,8 @@
             if (lastName) formData.append('lastName', lastName);
             if (email) formData.append('email', email);
             formData.append('onboardingCall', onboardingValue);
+            formData.append('tunnelConfig', tunnelConfig);
+            if (sessionId) formData.append('sessionId', sessionId);
             
             // Update the redirect_url in the manifest to include our form data
             const updatedManifest = {...currentManifest};
