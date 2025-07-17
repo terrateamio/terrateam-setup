@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en" class="height-full" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>GitHub Authentication</title>
+      <link rel="icon" href="/probot/static/logo.svg">
+      <link rel="stylesheet" href="/probot/static/primer.css">
+      <link rel="stylesheet" href="/probot/static/terrateam-setup.css">
+      <style>
+         .callback-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+            text-align: center;
+         }
+         
+         .callback-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            max-width: 500px;
+            width: 100%;
+         }
+         
+         .callback-status {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+         }
+         
+         .status-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+         }
+         
+         .status-success {
+            background-color: #d1f2eb;
+            color: #0d6137;
+         }
+         
+         .status-error {
+            background-color: #fbeaea;
+            color: #d93f0b;
+         }
+         
+         .status-loading {
+            background-color: #e3f2fd;
+            color: #1565c0;
+            animation: pulse 2s infinite;
+         }
+         
+         @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+         }
+         
+         .status-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+         }
+         
+         .status-message {
+            color: #6a737d;
+            margin: 0;
+         }
+      </style>
+   </head>
+   <body>
+      <div class="callback-container">
+         <div class="callback-card">
+            <img src="/probot/static/logo.svg" alt="Terrateam Logo" class="logo" style="margin-bottom: 2rem;">
+            
+            <div id="loading-state" class="callback-status">
+               <div class="status-icon status-loading">⏳</div>
+               <h2 class="status-title">Processing...</h2>
+               <p class="status-message">Completing GitHub authentication</p>
+            </div>
+            
+            <div id="success-state" class="callback-status" style="display: none;">
+               <div class="status-icon status-success">✓</div>
+               <h2 class="status-title">Authentication Successful!</h2>
+               <p class="status-message">You can close this window</p>
+            </div>
+            
+            <div id="error-state" class="callback-status" style="display: none;">
+               <div class="status-icon status-error">✗</div>
+               <h2 class="status-title">Authentication Failed</h2>
+               <p class="status-message" id="error-message">Please try again</p>
+            </div>
+         </div>
+      </div>
+      
+      <script>
+         // Parse URL parameters
+         const urlParams = new URLSearchParams(window.location.search);
+         const code = urlParams.get('code');
+         const state = urlParams.get('state');
+         const error = urlParams.get('error');
+         const errorDescription = urlParams.get('error_description');
+         
+         // Show appropriate state
+         function showState(stateId, message = null) {
+            document.querySelectorAll('.callback-status').forEach(el => el.style.display = 'none');
+            document.getElementById(stateId).style.display = 'flex';
+            
+            if (message && stateId === 'error-state') {
+               document.getElementById('error-message').textContent = message;
+            }
+         }
+         
+         // Handle OAuth response
+         if (error) {
+            // OAuth error occurred
+            showState('error-state', errorDescription || error);
+            
+            // Send error to parent window
+            if (window.opener) {
+               window.opener.postMessage({
+                  type: 'GITHUB_OAUTH_ERROR',
+                  error: errorDescription || error
+               }, window.location.origin);
+            }
+            
+            // Auto-close after delay
+            setTimeout(() => {
+               window.close();
+            }, 3000);
+            
+         } else {
+            // Check for Terratunnel direct token response first
+            const accessToken = urlParams.get('access_token');
+            const userLogin = urlParams.get('user_login');
+            const userId = urlParams.get('user_id');
+            const tunnelId = urlParams.get('tunnel_id');
+            const tunnelUrl = urlParams.get('tunnel_url');
+            const apiKey = urlParams.get('api_key');
+            
+            if (accessToken && userLogin) {
+               // Terratunnel sent tokens directly
+               showState('success-state');
+               
+               // Send success to parent window
+               if (window.opener) {
+                  window.opener.postMessage({
+                     type: 'GITHUB_OAUTH_SUCCESS',
+                     token: accessToken,
+                     user: {
+                        login: userLogin,
+                        id: parseInt(userId) || 0,
+                        avatar_url: `https://github.com/${userLogin}.png`
+                     },
+                     tunnel: tunnelId ? {
+                        tunnel_id: tunnelId,
+                        tunnel_url: tunnelUrl,
+                        api_key: apiKey
+                     } : null,
+                     sessionId: sessionStorage.getItem('sessionId')
+                  }, window.location.origin);
+               }
+               
+               // Auto-close after delay
+               setTimeout(() => {
+                  window.close();
+               }, 2000);
+               
+            } else if (code) {
+            // Success - we have an authorization code
+            
+            // In development mode, simulate token exchange
+            if ('{{ isDevelopment }}' === 'true') {
+               // Simulate successful authentication
+               setTimeout(() => {
+                  showState('success-state');
+                  
+                  const mockResponse = {
+                     access_token: 'mock_token_' + code,
+                     user: {
+                        login: 'mock_user',
+                        id: 123456,
+                        avatar_url: 'https://github.com/identicons/mock_user.png'
+                     },
+                     tunnel: {
+                        tunnel_id: 'mock_tunnel_' + Date.now(),
+                        tunnel_url: 'https://mock-tunnel-' + Date.now() + '.tunnel.terrateam.dev',
+                        api_key: 'mock_api_key_' + Math.random().toString(36).substring(7)
+                     }
+                  };
+                  
+                  // Send success to parent window
+                  if (window.opener) {
+                     window.opener.postMessage({
+                        type: 'GITHUB_OAUTH_SUCCESS',
+                        token: mockResponse.access_token,
+                        user: mockResponse.user,
+                        tunnel: mockResponse.tunnel,
+                        sessionId: sessionStorage.getItem('sessionId')
+                     }, window.location.origin);
+                  }
+                  
+                  // Auto-close after delay
+                  setTimeout(() => {
+                     window.close();
+                  }, 2000);
+               }, 1000);
+               
+            } else {
+               // Production mode - code should already be exchanged by Terratunnel
+               // The URL should contain the access_token and user info directly
+               const accessToken = urlParams.get('access_token');
+               const userLogin = urlParams.get('user_login');
+               const userId = urlParams.get('user_id');
+               const tunnelId = urlParams.get('tunnel_id');
+               const tunnelUrl = urlParams.get('tunnel_url');
+               const apiKey = urlParams.get('api_key');
+               
+               if (accessToken && userLogin) {
+                  showState('success-state');
+                  
+                  // Send success to parent window
+                  if (window.opener) {
+                     window.opener.postMessage({
+                        type: 'GITHUB_OAUTH_SUCCESS',
+                        token: accessToken,
+                        user: {
+                           login: userLogin,
+                           id: parseInt(userId) || 0,
+                           avatar_url: `https://github.com/${userLogin}.png`
+                        },
+                        tunnel: tunnelId ? {
+                           tunnel_id: tunnelId,
+                           tunnel_url: tunnelUrl,
+                           api_key: apiKey
+                        } : null,
+                        sessionId: sessionStorage.getItem('sessionId')
+                     }, window.location.origin);
+                  }
+                  
+                  // Auto-close after delay
+                  setTimeout(() => {
+                     window.close();
+                  }, 2000);
+               } else {
+                  // Fallback: try the old local exchange method
+                  const sessionId = sessionStorage.getItem('sessionId');
+                  
+                  fetch('/probot/oauth-exchange', {
+                     method: 'POST',
+                     headers: {
+                        'Content-Type': 'application/json',
+                     },
+                     body: JSON.stringify({
+                        code: code,
+                        state: state,
+                        sessionId: sessionId
+                     })
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                     if (data.success) {
+                        showState('success-state');
+                        
+                        // Send success to parent window
+                        if (window.opener) {
+                           window.opener.postMessage({
+                              type: 'GITHUB_OAUTH_SUCCESS',
+                              token: data.access_token,
+                              user: data.user,
+                              tunnel: data.tunnel,
+                              sessionId: data.sessionId
+                           }, window.location.origin);
+                        }
+                        
+                        // Auto-close after delay
+                        setTimeout(() => {
+                           window.close();
+                        }, 2000);
+                     } else {
+                        showState('error-state', data.error || 'Authentication failed');
+                        
+                        // Send error to parent window
+                        if (window.opener) {
+                           window.opener.postMessage({
+                              type: 'GITHUB_OAUTH_ERROR',
+                              error: data.error || 'Authentication failed'
+                           }, window.location.origin);
+                        }
+                        
+                        // Auto-close after delay
+                        setTimeout(() => {
+                           window.close();
+                        }, 3000);
+                     }
+                  })
+                  .catch(err => {
+                     showState('error-state', 'Network error occurred');
+                     
+                     // Send error to parent window
+                     if (window.opener) {
+                        window.opener.postMessage({
+                           type: 'GITHUB_OAUTH_ERROR',
+                           error: 'Network error occurred'
+                        }, window.location.origin);
+                     }
+                     
+                     // Auto-close after delay
+                     setTimeout(() => {
+                        window.close();
+                     }, 3000);
+                  });
+               }
+            }
+            
+         } else {
+            // No code and no error - something went wrong
+            showState('error-state', 'No authorization code received');
+            
+            // Send error to parent window
+            if (window.opener) {
+               window.opener.postMessage({
+                  type: 'GITHUB_OAUTH_ERROR',
+                  error: 'No authorization code received'
+               }, window.location.origin);
+            }
+            
+            // Auto-close after delay
+            setTimeout(() => {
+               window.close();
+            }, 3000);
+         }
+         }
+         
+         // Handle case where popup was opened directly (not from parent)
+         if (!window.opener) {
+            showState('error-state', 'This page should only be opened as a popup');
+         }
+      </script>
+   </body>
+</html>

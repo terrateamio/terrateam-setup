@@ -45,19 +45,19 @@ body {
   border-radius: 16px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   padding: 3rem;
-  max-width: 900px;
+  max-width: 1200px;
   width: 100%;
   text-align: center;
 }
 
 .logo {
-  width: 80px;
-  height: 80px;
-  margin-bottom: 2rem;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 1.5rem;
 }
 
 .setup-title {
-  font-size: 4rem;
+  font-size: 3.5rem;
   font-weight: 700;
   color: #1a1a1a;
   margin-bottom: 0.5rem;
@@ -252,6 +252,474 @@ body {
 
 .btn-primary:active {
   transform: translateY(0);
+}
+
+.btn-primary.btn-disabled,
+.btn-primary:disabled {
+  background: #9ca3af;
+  color: #d1d5db;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-primary.btn-disabled:hover,
+.btn-primary:disabled:hover {
+  background: #9ca3af;
+  color: #d1d5db;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-github {
+  background: #24292e;
+  color: white;
+  border: none;
+  padding: 1.25rem 3rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  margin: 1rem 0;
+}
+
+.btn-github:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(36, 41, 46, 0.3);
+  background: #1c2126;
+}
+
+.btn-github:active {
+  transform: translateY(0);
+}
+
+.btn-github-compact {
+  background: #24292e;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.btn-github-compact:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(36, 41, 46, 0.3);
+  background: #1c2126;
+}
+
+.btn-github-compact:active {
+  transform: translateY(0);
+}
+
+.github-icon {
+  fill: currentColor;
+}
+
+.github-auth-section {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.auth-help {
+  margin-top: 0.75rem;
+  color: #6a737d;
+  font-size: 0.9rem;
+}
+
+.oauth-status {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.oauth-status-success {
+  background-color: #d1f2eb;
+  color: #0d6137;
+  border: 1px solid #a7e8d4;
+}
+
+.oauth-status-error {
+  background-color: #fbeaea;
+  color: #d93f0b;
+  border: 1px solid #f5c6cb;
+}
+
+/* Tunnel Configuration Styles */
+.tunnel-layout {
+  display: flex;
+  gap: 3rem;
+  align-items: flex-start;
+  margin: 1.5rem 0;
+}
+
+.tunnel-left-panel {
+  flex: 1;
+  min-width: 0;
+}
+
+.tunnel-right-panel {
+  flex: 1;
+  min-width: 0;
+}
+
+.tunnel-info-section {
+  background: linear-gradient(135deg, #f8fbff 0%, #e3f2fd 100%);
+  border: 2px solid #c8e1ff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: left;
+  box-shadow: 0 4px 12px rgba(0, 155, 255, 0.1);
+  height: fit-content;
+}
+
+.info-header {
+  margin-bottom: 1.5rem;
+}
+
+.info-title-text {
+  text-align: center;
+}
+
+.info-title {
+  color: #0366d6;
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.info-subtitle {
+  color: #586069;
+  margin: 0.25rem 0 0 0;
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.info-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.highlight-item {
+  padding: 1.25rem;
+  background: white;
+  border-radius: 12px;
+  border: 2px solid #e1e4e8;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.highlight-item:hover {
+  border-color: #009BFF;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 155, 255, 0.15);
+}
+
+.highlight-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.highlight-text strong {
+  color: #24292e;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.highlight-text span {
+  color: #586069;
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.highlight-link {
+  color: #009BFF;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.highlight-link:hover {
+  color: #0080d9;
+  text-decoration: underline;
+}
+
+.tunnel-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 0 0 1rem 0;
+}
+
+.tunnel-option-card {
+  position: relative;
+  border: 2px solid #e1e4e8;
+  border-radius: 9px;
+  padding: 0;
+  transition: all 0.3s ease;
+  background: #fff;
+  cursor: pointer;
+}
+
+.tunnel-option-card:hover {
+  border-color: #009BFF;
+  box-shadow: 0 4px 12px rgba(0, 155, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+.tunnel-option-card:has(.tunnel-radio:checked) {
+  border-color: #009BFF;
+  background: #f8fbff;
+  box-shadow: 0 4px 16px rgba(0, 155, 255, 0.15);
+}
+
+.tunnel-radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.tunnel-option-label {
+  display: block;
+  padding: 2rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.tunnel-option-label::before {
+  content: '';
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #d1d5da;
+  border-radius: 50%;
+  background: #fff;
+  transition: all 0.2s ease;
+}
+
+.tunnel-radio:checked + .tunnel-option-label::before {
+  border-color: #009BFF;
+  background: #009BFF;
+  box-shadow: inset 0 0 0 3px #fff;
+}
+
+.option-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.option-icon {
+  font-size: 1.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f6f8fa 0%, #e1e4e8 100%);
+  border-radius: 8px;
+  border: 1px solid #e1e4e8;
+}
+
+.tunnel-radio:checked + .tunnel-option-label .option-icon {
+  background: linear-gradient(135deg, #009BFF 0%, #0080d9 100%);
+  border-color: #009BFF;
+  color: white;
+}
+
+.option-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #24292e;
+  margin: 0;
+}
+
+.option-description {
+  color: #586069;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  margin: 0;
+  margin-left: 3.5rem;
+}
+
+.tunnel-config-section {
+  background: #f8fbff;
+  border: 1px solid #c8e1ff;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.tunnel-auth-explanation {
+  margin: 0 0 1.5rem 0;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0366d6 0%, #0080d9 100%);
+  font-size: 1.1rem;
+  line-height: 1.4;
+  font-weight: 600;
+  text-align: center;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  border: 2px solid #0366d6;
+  box-shadow: 0 2px 8px rgba(3, 102, 214, 0.2);
+}
+
+.tunnel-next-steps {
+  margin: 0.75rem 0 0 0;
+  color: #24292e;
+  font-size: 1rem;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  align-items: center;
+}
+
+.btn-secondary {
+  background: #f6f8fa;
+  color: #24292e;
+  border: 1px solid #d1d5da;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.btn-secondary:hover {
+  background: #e1e4e8;
+  border-color: #c6cbd1;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .setup-card {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+    max-width: 95%;
+  }
+  
+  .setup-title {
+    font-size: 2.5rem;
+  }
+  
+  .setup-subtitle {
+    font-size: 1.5rem;
+  }
+  
+  .tunnel-layout {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .tunnel-info-section {
+    padding: 1.5rem;
+  }
+  
+  .info-header {
+    text-align: center;
+  }
+  
+  .info-title {
+    font-size: 1.75rem;
+  }
+  
+  .info-subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .highlight-item {
+    padding: 1rem;
+  }
+  
+  .highlight-text strong {
+    font-size: 1.1rem;
+  }
+  
+  .highlight-text span,
+  .highlight-link {
+    font-size: 1rem;
+  }
+  
+  .tunnel-options {
+    gap: 1rem;
+  }
+  
+  .tunnel-option-label {
+    padding: 1.5rem;
+  }
+  
+  .option-title {
+    font-size: 1.25rem;
+  }
+  
+  .option-description {
+    font-size: 1.1rem;
+    margin-left: 3rem;
+  }
+  
+  .tunnel-config-section {
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .btn-github-compact {
+    padding: 0.9rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .option-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .option-description {
+    margin-left: 0;
+  }
+  
+  .button-group {
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    text-align: center;
+  }
 }
 
 .support-section {

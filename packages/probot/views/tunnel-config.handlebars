@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" class="height-full" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Terrateam Setup - Configure Tunnel</title>
+      <link rel="icon" href="/probot/static/logo.svg">
+      <link rel="stylesheet" href="/probot/static/primer.css">
+      <link rel="stylesheet" href="/probot/static/terrateam-setup.css">
+   </head>
+   <body>
+      <div class="setup-container">
+         <div class="setup-card">
+            <img src="/probot/static/logo.svg" alt="Terrateam Logo" class="logo">
+            <h1 class="setup-title">Configure Tunnel</h1>
+            <h2 class="setup-subtitle">Do you need a public tunnel for webhooks?</h2>
+            <p class="setup-description">GitHub needs to send webhooks to your Terrateam server. Choose how to make your server accessible.</p>
+            
+            <div class="tunnel-layout">
+               <div class="tunnel-left-panel">
+                  <div class="tunnel-info-section">
+                     <div class="info-header">
+                        <div class="info-title-text">
+                           <h3 class="info-title">Terratunnel</h3>
+                           <p class="info-subtitle">Free secure tunneling to connect your local server to GitHub webhooks</p>
+                        </div>
+                     </div>
+                     
+                     <div class="info-highlights">
+                        <div class="highlight-item">
+                           <div class="highlight-text">
+                              <strong>Private & Secure</strong>
+                              <span>Secure WebSocket connections with permanent tunnel URLs.</span>
+                           </div>
+                        </div>
+                        <div class="highlight-item">
+                           <div class="highlight-text">
+                              <strong>Completely Free</strong>
+                              <span>Provided at no cost by Terrateam for development and testing.</span>
+                           </div>
+                        </div>
+                        <div class="highlight-item">
+                           <div class="highlight-text">
+                              <strong>Open Source</strong>
+                              <a href="https://github.com/terrateamio/terratunnel" target="_blank" class="highlight-link">View source code on GitHub</a>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               
+               <div class="tunnel-right-panel">
+                  <div class="form-section">
+                     <div class="tunnel-options">
+                        <div class="tunnel-option-card">
+                           <input type="radio" id="no-tunnel" name="tunnel-type" value="none" class="tunnel-radio">
+                           <label for="no-tunnel" class="tunnel-option-label">
+                              <div class="option-header">
+                                 <div class="option-icon">🌐</div>
+                                 <div class="option-title">No - I have a public server</div>
+                              </div>
+                              <div class="option-description">My server is already publicly accessible (cloud deployment, public IP, etc.)</div>
+                           </label>
+                        </div>
+                        
+                        <div class="tunnel-option-card">
+                           <input type="radio" id="yes-tunnel" name="tunnel-type" value="tunnel" class="tunnel-radio" checked>
+                           <label for="yes-tunnel" class="tunnel-option-label">
+                              <div class="option-header">
+                                 <div class="option-icon">🔒</div>
+                                 <div class="option-title">Yes - I need a tunnel</div>
+                              </div>
+                              <div class="option-description">My server is behind a firewall or running locally</div>
+                           </label>
+                        </div>
+                     </div>
+
+                     <!-- Tunnel configuration when Yes is selected -->
+                     <div id="tunnel-config" class="tunnel-config-section" style="display: block;">
+                        <p class="tunnel-auth-explanation">GitHub authentication is required to protect against malicious activity and ensure secure tunnel provisioning.</p>
+                        <button type="button" id="github-signin-btn" class="btn-github-compact">
+                           <svg height="14" width="14" viewBox="0 0 16 16" class="github-icon">
+                              <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                           </svg>
+                           Sign in with GitHub
+                        </button>
+                        <p class="tunnel-next-steps">This will open a popup to authenticate with GitHub and automatically configure your tunnel endpoint.</p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+            <div class="button-group">
+               <button type="button" id="back-btn" class="btn-secondary">Back</button>
+               <button type="button" id="next-btn" class="btn-primary">Continue to App Setup</button>
+            </div>
+         </div>
+         <div class="support-section">
+            <h4 class="support-title">Support</h4>
+            <div class="support-links">
+               <a href="https://terrateam.io/docs/" class="support-link">Docs</a>
+               <a href="https://terrateam.io/slack" class="support-link">Slack</a>
+               <a href="https://github.com/terrateamio/terrateam" class="support-link">GitHub</a>
+               <a href="mailto:support@terrateam.io" class="support-link">Email</a>
+            </div>
+         </div>
+      </div>
+      
+      <!-- Fixed help link -->
+      <div class="fixed-help">
+         <a href="https://terrateam.io/slack" class="fixed-help-link" target="_blank">
+            Need help? Join Slack
+         </a>
+      </div>
+      
+      <script>
+         // Store session ID for API calls
+         const sessionId = '{{ sessionId }}';
+         sessionStorage.setItem('sessionId', sessionId);
+         
+         // Handle tunnel type selection (Yes/No)
+         document.querySelectorAll('input[name="tunnel-type"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+               const tunnelConfig = document.getElementById('tunnel-config');
+               const nextBtn = document.getElementById('next-btn');
+               
+               if (this.value === 'tunnel') {
+                  tunnelConfig.style.display = 'block';
+                  nextBtn.disabled = true;
+                  nextBtn.classList.add('btn-disabled');
+               } else {
+                  tunnelConfig.style.display = 'none';
+                  nextBtn.disabled = false;
+                  nextBtn.classList.remove('btn-disabled');
+               }
+            });
+         });
+
+         // Initialize button state on page load
+         document.addEventListener('DOMContentLoaded', function() {
+            const tunnelRadio = document.getElementById('yes-tunnel');
+            const nextBtn = document.getElementById('next-btn');
+            
+            if (tunnelRadio && tunnelRadio.checked) {
+               nextBtn.disabled = true;
+               nextBtn.classList.add('btn-disabled');
+            }
+         });
+
+         // Handle GitHub sign-in button
+         document.getElementById('github-signin-btn').addEventListener('click', function() {
+            // Store that user needs tunnel
+            const tunnelConfig = {
+               needsTunnel: true,
+               method: 'github-tunnel'
+            };
+            
+            sessionStorage.setItem('tunnelConfig', JSON.stringify(tunnelConfig));
+            
+            // Open GitHub OAuth in popup window
+            openGitHubOAuth();
+         });
+
+         function openGitHubOAuth() {
+            // Use Terratunnel's OAuth proxy instead of direct GitHub OAuth
+            const terratunnelOAuthUrl = 'https://tunnel.terrateam.dev/auth/github/authorize';
+            const redirectUri = encodeURIComponent(window.location.origin + '/probot/oauth-callback');
+            const state = encodeURIComponent(generateRandomState());
+            
+            // Store state for verification
+            sessionStorage.setItem('oauth_state', state);
+            
+            // Build the OAuth URL to go through Terratunnel
+            const oauthUrl = `${terratunnelOAuthUrl}?redirect_uri=${redirectUri}&state=${state}`;
+            
+            // Open popup window
+            const popup = window.open(
+               oauthUrl,
+               'github-oauth',
+               'width=600,height=700,scrollbars=yes,resizable=yes,status=yes,location=yes,toolbar=no,menubar=no'
+            );
+            
+            // Monitor popup for completion
+            const checkClosed = setInterval(function() {
+               if (popup.closed) {
+                  clearInterval(checkClosed);
+                  // Check if authentication was successful
+                  checkOAuthResult();
+               }
+            }, 1000);
+            
+            // Handle message from popup
+            window.addEventListener('message', function(event) {
+               if (event.origin !== window.location.origin) return;
+               
+               if (event.data.type === 'GITHUB_OAUTH_SUCCESS') {
+                  clearInterval(checkClosed);
+                  popup.close();
+                  handleOAuthSuccess(event.data);
+               } else if (event.data.type === 'GITHUB_OAUTH_ERROR') {
+                  clearInterval(checkClosed);
+                  popup.close();
+                  handleOAuthError(event.data.error);
+               }
+            });
+         }
+
+         function generateRandomState() {
+            return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+         }
+
+         function checkOAuthResult() {
+            // Check session storage for OAuth result
+            const oauthResult = sessionStorage.getItem('github_oauth_result');
+            if (oauthResult) {
+               const result = JSON.parse(oauthResult);
+               sessionStorage.removeItem('github_oauth_result');
+               
+               if (result.success) {
+                  handleOAuthSuccess(result);
+               } else {
+                  handleOAuthError(result.error);
+               }
+            }
+         }
+
+         function handleOAuthSuccess(data) {
+            // Update tunnel config with OAuth token and tunnel credentials
+            const tunnelConfig = JSON.parse(sessionStorage.getItem('tunnelConfig') || '{}');
+            tunnelConfig.githubToken = data.token;
+            tunnelConfig.githubUser = data.user;
+            tunnelConfig.sessionId = data.sessionId || sessionId;
+            
+            if (data.tunnel) {
+               tunnelConfig.tunnelCredentials = data.tunnel;
+               showOAuthStatus('success', 'GitHub authentication successful! Tunnel configured: ' + data.tunnel.tunnel_url);
+            } else {
+               showOAuthStatus('success', 'GitHub authentication successful! Setting up your tunnel...');
+            }
+            
+            sessionStorage.setItem('tunnelConfig', JSON.stringify(tunnelConfig));
+            
+            // Proceed to app setup after brief delay
+            setTimeout(() => {
+               window.location.href = '/probot/app-setup';
+            }, 2000);
+         }
+
+         function handleOAuthError(error) {
+            showOAuthStatus('error', 'GitHub authentication failed: ' + (error || 'Unknown error'));
+         }
+
+         function showOAuthStatus(type, message) {
+            // Remove any existing status
+            const existingStatus = document.querySelector('.oauth-status');
+            if (existingStatus) {
+               existingStatus.remove();
+            }
+            
+            // Create status element
+            const status = document.createElement('div');
+            status.className = `oauth-status oauth-status-${type}`;
+            status.textContent = message;
+            
+            // Insert after tunnel config section
+            const tunnelSection = document.querySelector('.tunnel-config-section');
+            if (tunnelSection) {
+               tunnelSection.appendChild(status);
+            }
+         }
+
+         // Handle navigation
+         document.getElementById('back-btn').addEventListener('click', function() {
+            window.location.href = '/probot';
+         });
+
+         document.getElementById('next-btn').addEventListener('click', function() {
+            const needsTunnel = document.querySelector('input[name="tunnel-type"]:checked').value === 'tunnel';
+            
+            if (needsTunnel) {
+               // Don't proceed directly - user should use GitHub sign-in button
+               alert('Please use the "Sign in with GitHub" button to set up your tunnel.');
+               return;
+            }
+            
+            // Store tunnel configuration in session storage
+            const tunnelConfig = {
+               needsTunnel: false
+            };
+
+            sessionStorage.setItem('tunnelConfig', JSON.stringify(tunnelConfig));
+            
+            // Navigate to app setup screen
+            window.location.href = '/probot/app-setup';
+         });
+      </script>
+   </body>
+</html>
