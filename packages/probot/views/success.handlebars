@@ -201,7 +201,31 @@ docker-compose up -d server</code>
                            <strong>Start Using Terrateam</strong>
                            <div class="sub-steps">
                               <div class="sub-step">
-                                 Create a pull request with a Terraform code change to trigger your first plan operation
+                                 <strong>Trigger your first Terrateam operation:</strong> Create a pull request with a Terraform code change to see Terrateam in action
+                              </div>
+                              <div class="sub-step">
+                                 <strong>Enable Terrateam UI Access:</strong>
+                                 <ol style="margin-left: 20px; margin-top: 10px;">
+                                    <li>Navigate to your GitHub App settings: <a href="{{ html_url }}" target="_blank" class="app-link">{{ html_url }}</a></li>
+                                    <li>Check the box "Request user authorization (OAuth) during installation"</li>
+                                    <li>Set the callback URL to:
+                                       <div class="code-block" style="margin: 10px 0;">
+                                          <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                                          <code>{{ tunnelUrl }}/api/github/v1/callback</code>
+                                       </div>
+                                    </li>
+                                    <li>Save your changes</li>
+                                 </ol>
+                                 <div class="sub-note">
+                                    <strong>Access your Terrateam UI:</strong> After configuring OAuth, access the UI at:
+                                    <div class="code-block" style="margin: 10px 0;">
+                                       <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                                       <code>{{ tunnelUrl }}</code>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="sub-step">
+                                 <strong>Monitor operations:</strong> View real-time plan and apply progress in the Terrateam UI
                               </div>
                            </div>
                         </div>
@@ -240,6 +264,7 @@ docker-compose up -d server</code>
          // State management for steps
          let currentStep = 1;
          let completedSteps = [];
+         const totalSteps = 5;
          
          // Initialize on page load
          document.addEventListener('DOMContentLoaded', function() {
@@ -281,7 +306,7 @@ docker-compose up -d server</code>
             const chevron = document.querySelector(`[data-step="${stepNumber}"] .step-chevron`);
             
             // Close all other steps first
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 1; i <= totalSteps; i++) {
                if (i !== stepNumber) {
                   const otherContent = document.getElementById(`step-${i}-content`);
                   const otherChevron = document.querySelector(`[data-step="${i}"] .step-chevron`);
@@ -312,14 +337,14 @@ docker-compose up -d server</code>
                stepItem.classList.add('completed');
             }
             
-            if (stepNumber < 5) {
+            if (stepNumber < totalSteps) {
                currentStep = stepNumber + 1;
                // Collapse current step and expand next
                toggleStep(stepNumber);
                toggleStep(currentStep);
             } else {
-               // Close all steps first, including step 5
-               for (let i = 1; i <= 5; i++) {
+               // Close all steps first, including final step
+               for (let i = 1; i <= totalSteps; i++) {
                   const content = document.getElementById(`step-${i}-content`);
                   const chevron = document.querySelector(`[data-step="${i}"] .step-chevron`);
                   if (content) {
@@ -363,7 +388,7 @@ docker-compose up -d server</code>
          
          // Update step visibility based on current state
          function updateStepVisibility() {
-            for (let i = 1; i <= 5; i++) {
+            for (let i = 1; i <= totalSteps; i++) {
                const stepItem = document.querySelector(`[data-step="${i}"]`);
                const content = document.getElementById(`step-${i}-content`);
                const chevron = document.querySelector(`[data-step="${i}"] .step-chevron`);
@@ -382,7 +407,7 @@ docker-compose up -d server</code>
             }
             
             // Show completion if all steps are done
-            if (completedSteps.length === 5) {
+            if (completedSteps.length === totalSteps) {
                document.getElementById('completion-section').style.display = 'block';
             }
          }

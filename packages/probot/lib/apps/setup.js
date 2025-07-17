@@ -275,7 +275,7 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
                     },
                     tunnel: {
                         tunnel_id: 'dev_tunnel_' + Date.now(),
-                        tunnel_url: 'https://dev-tunnel-' + Date.now() + '.tunnel.terrateam.dev',
+                        tunnel_url: 'dev-tunnel-' + Date.now() + '.tunnel.terrateam.dev',
                         api_key: 'dev_api_key_' + Math.random().toString(36).substring(7)
                     }
                 };
@@ -493,6 +493,16 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
                             }
                             envContent += `TERRATUNNEL_API_KEY=${apiKey}\n`;
                             
+                            // Add TERRAT_UI_BASE if tunnel URL exists
+                            if (tunnelData.tunnelCredentials.tunnel_url) {
+                                let tunnelUrl = tunnelData.tunnelCredentials.tunnel_url;
+                                // Ensure we don't double-add https://
+                                if (!tunnelUrl.startsWith('https://') && !tunnelUrl.startsWith('http://')) {
+                                    tunnelUrl = `https://${tunnelUrl}`;
+                                }
+                                envContent += `TERRAT_UI_BASE=${tunnelUrl}\n`;
+                            }
+                            
                             env_file = envContent;
                         }
                         
@@ -503,7 +513,25 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
                     }
                 }
                 
-                res.render("success.handlebars", { env_file, html_url, id, client_id, client_secret, webhook_secret, pem });
+                // Retrieve tunnel data from session if available (dev mode)
+                let tunnelUrl = null;
+                if (sessionId) {
+                    const tunnelCredentials = applicationState.tunnelCredentials.get(sessionId);
+                    if (tunnelCredentials && tunnelCredentials.tunnel_url) {
+                        tunnelUrl = tunnelCredentials.tunnel_url;
+                    }
+                }
+                
+                // Extract TERRAT_UI_BASE from env_file if tunnelUrl is not set
+                if (!tunnelUrl) {
+                    const envContent = env_file.toString();
+                    const terratUiBaseMatch = envContent.match(/^TERRAT_UI_BASE=(.+)$/m);
+                    if (terratUiBaseMatch) {
+                        tunnelUrl = terratUiBaseMatch[1];
+                    }
+                }
+                
+                res.render("success.handlebars", { env_file, html_url, id, client_id, client_secret, webhook_secret, pem, tunnelUrl });
                 return;
             } catch (e) {
                 app.log.error('Development mode error:', e);
@@ -544,6 +572,16 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
                         }
                         envContent += `TERRATUNNEL_API_KEY=${apiKey}\n`;
                         
+                        // Add TERRAT_UI_BASE if tunnel URL exists
+                        if (tunnelData.tunnelCredentials.tunnel_url) {
+                            let tunnelUrl = tunnelData.tunnelCredentials.tunnel_url;
+                            // Ensure we don't double-add https://
+                            if (!tunnelUrl.startsWith('https://') && !tunnelUrl.startsWith('http://')) {
+                                tunnelUrl = `https://${tunnelUrl}`;
+                            }
+                            envContent += `TERRAT_UI_BASE=${tunnelUrl}\n`;
+                        }
+                        
                         env_file = envContent;
                     }
                     
@@ -581,7 +619,55 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
                 app.log.error('Telemetry error:', telemetryError);
             }
             
-            res.render("success.handlebars", { env_file, html_url, id, client_id, client_secret, webhook_secret, pem });
+            // Retrieve tunnel data from session if available
+            let tunnelUrl = null;
+            if (sessionId) {
+                const tunnelCredentials = applicationState.tunnelCredentials.get(sessionId);
+                if (tunnelCredentials && tunnelCredentials.tunnel_url) {
+                    tunnelUrl = tunnelCredentials.tunnel_url;
+                    
+                    // Also update .env file with tunnel credentials if not already done
+                    if (tunnelCredentials.api_key && !tunnelConfig) {
+                        let envContent = env_file.toString();
+                        
+                        // Check if TERRATUNNEL_API_KEY already exists
+                        if (!envContent.includes('TERRATUNNEL_API_KEY=')) {
+                            // Remove extra blank lines
+                            envContent = envContent.replace(/\n\s*\n/g, '\n');
+                            
+                            // Add the new keys
+                            if (!envContent.endsWith('\n')) {
+                                envContent += '\n';
+                            }
+                            envContent += `TERRATUNNEL_API_KEY=${tunnelCredentials.api_key}\n`;
+                            
+                            // Add TERRAT_UI_BASE with proper protocol handling
+                            let tunnelUrl = tunnelCredentials.tunnel_url;
+                            // Ensure we don't double-add https://
+                            if (!tunnelUrl.startsWith('https://') && !tunnelUrl.startsWith('http://')) {
+                                tunnelUrl = `https://${tunnelUrl}`;
+                            }
+                            envContent += `TERRAT_UI_BASE=${tunnelUrl}\n`;
+                            
+                            env_file = envContent;
+                            
+                            // Write updated .env file
+                            fs.writeFileSync(path_1.default.join(process.cwd(), ".env"), env_file);
+                        }
+                    }
+                }
+            }
+            
+            // Extract TERRAT_UI_BASE from env_file if tunnelUrl is not set
+            if (!tunnelUrl) {
+                const envContent = env_file.toString();
+                const terratUiBaseMatch = envContent.match(/^TERRAT_UI_BASE=(.+)$/m);
+                if (terratUiBaseMatch) {
+                    tunnelUrl = terratUiBaseMatch[1];
+                }
+            }
+            
+            res.render("success.handlebars", { env_file, html_url, id, client_id, client_secret, webhook_secret, pem, tunnelUrl });
         }
         catch (e) {
             app.log.error(e);
