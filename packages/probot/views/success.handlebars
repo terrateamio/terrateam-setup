@@ -15,6 +15,12 @@
             <img src="/probot/static/logo.svg" alt="Terrateam Logo" class="logo">
             <h1 class="success-title">Success!</h1>
             <h2 class="success-subtitle">Your GitHub Application has been created</h2>
+            <div class="progress-indicator">
+               <div class="progress-step completed">1. Welcome</div>
+               <div class="progress-step completed">2. Configure Access</div>
+               <div class="progress-step completed">3. Create App</div>
+               <div class="progress-step active">4. Complete</div>
+            </div>
             
             <div class="next-steps-section">
                <div class="next-steps-title">What to do next:</div>
@@ -28,7 +34,7 @@
                      <div class="step-content" id="step-1-content">
                         <div class="step-description">
                            <div class="warning-inline-step">
-                              ⚠️ <strong>Important:</strong> Do not install the GitHub application yet! The Terrateam server must be fully deployed and running before you can register installations. You'll install this in step 4 after the server is ready.
+                              ⚠️ <strong>Important:</strong> Don't install the GitHub app on any repositories yet! First, complete all the steps below to deploy your Terrateam server and configure the UI. The Getting Started wizard in the Terrateam UI will guide you through installing the app on your repositories.
                            </div>
                         </div>
                         <button class="next-step-btn" onclick="completeStep(1)">Next</button>
@@ -37,12 +43,13 @@
                   <div class="next-steps-item step-item" data-step="2">
                      <div class="step-header" onclick="toggleStep(2)">
                         <div class="step-number">2</div>
-                        <div class="step-title-text">Copy these settings to your .env file</div>
+                        <div class="step-title-text">Copy these settings to your .env file (next to your docker-compose.yml)</div>
                         <div class="step-chevron">▶</div>
                      </div>
                      <div class="step-content" id="step-2-content" style="display: none;">
                         <div class="step-description">
                            <strong>Copy these settings to your `.env` file</strong>
+                           <div class="sub-note" style="margin-top: 10px;">This `.env` file should be placed in the same directory as your Terrateam `docker-compose.yml` file.</div>
                            <div class="env-inline-section">
                               <textarea id="env" class="env-textarea">{{ env_file }}</textarea>
                               <button id="copyToClipboard" class="copy-btn">Copy to Clipboard</button>
@@ -89,16 +96,6 @@
                                        <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
                                        <code>docker-compose up -d server</code>
                                     </div>
-                                    <div class="sub-note">
-                                       <strong>GitHub Enterprise users:</strong> Use these commands instead:
-                                       <div class="code-block">
-                                          <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
-                                          <code>export TERRAT_API_BASE=https://terrateam.example.com
-export GITHUB_API_BASE_URL=https://api.github.example.com  
-export GITHUB_WEB_BASE_URL=https://github.example.com
-docker-compose up -d server</code>
-                                       </div>
-                                    </div>
                                  </div>
                                  <div class="sub-step">
                                     <strong>Wait for the server:</strong> The command will return to your shell when the server is ready
@@ -137,53 +134,29 @@ docker-compose up -d server</code>
                   <div class="next-steps-item step-item" data-step="4">
                      <div class="step-header" onclick="toggleStep(4)">
                         <div class="step-number">4</div>
-                        <div class="step-title-text">Install and Configure</div>
+                        <div class="step-title-text">Enable Terrateam UI Access</div>
                         <div class="step-chevron">▶</div>
                      </div>
                      <div class="step-content" id="step-4-content" style="display: none;">
                         <div class="step-description">
-                           <strong>Install and Configure</strong>
-                           <div class="sub-steps">
-                              <div class="sub-step">
-                                 <strong>Install the GitHub application:</strong> <a href="{{ html_url }}/installations/new" target="_blank" class="app-link">Install Terrateam</a> on your organization or specific repositories
-                                 <div class="warning-inline">⚠️ Make sure the Terrateam Server is running before installing!</div>
-                              </div>
-                              <div class="sub-step">
-                                 <strong>Add the GitHub Actions workflow</strong> to your repository containing Terraform code (where you want Terrateam to operate):
-                                 <div class="workflow-steps">
-                                    <div class="workflow-step">1. Create a new branch:
-                                       <div class="code-block">
-                                          <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
-                                          <code>git checkout -b add-terrateam-workflow</code>
-                                       </div>
-                                    </div>
-                                    <div class="workflow-step">2. Create directory structure and download workflow:</div>
-                                    <div class="workflow-step">
-                                       <div class="code-block">
-                                          <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
-                                          <code>mkdir -p .github/workflows</code>
-                                       </div>
-                                    </div>
-                                    <div class="workflow-step">
-                                       <div class="code-block">
-                                          <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
-                                          <code>curl -o .github/workflows/terrateam.yml https://raw.githubusercontent.com/terrateamio/terrateam-example/refs/heads/main/github/actions/workflows/default/terrateam.yml</code>
-                                       </div>
-                                    </div>
-                                    <div class="workflow-step">3. Add and commit:
-                                       <div class="code-block">
-                                          <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
-                                          <code>git add .github/workflows/terrateam.yml && git commit -m "Add Terrateam workflow"</code>
-                                       </div>
-                                    </div>
-                                    <div class="workflow-step">4. Push the branch:
-                                       <div class="code-block">
-                                          <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
-                                          <code>git push origin add-terrateam-workflow</code>
-                                       </div>
-                                    </div>
-                                    <div class="workflow-step">5. Create a Pull Request on GitHub and merge it to your main branch</div>
+                           <strong>Enable Terrateam UI Access</strong>
+                           <ol style="margin-left: 20px; margin-top: 10px;">
+                              <li>Navigate to your GitHub App: <a href="{{ html_url }}" target="_blank" class="app-link">{{ html_url }}</a></li>
+                              <li>Click on "App settings" on the right side under the Install button</li>
+                              <li>Check the box "Request user authorization (OAuth) during installation"</li>
+                              <li>Set the callback URL to:
+                                 <div class="code-block" style="margin: 10px 0;">
+                                    <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                                    <code>{{ tunnelUrl }}/api/github/v1/callback</code>
                                  </div>
+                              </li>
+                              <li>Save your changes</li>
+                           </ol>
+                           <div class="sub-note">
+                              <strong>Access your Terrateam UI:</strong> After configuring OAuth, access the UI at:
+                              <div class="code-block" style="margin: 10px 0;">
+                                 <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                                 <code>{{ tunnelUrl }}</code>
                               </div>
                            </div>
                         </div>
@@ -193,39 +166,31 @@ docker-compose up -d server</code>
                   <div class="next-steps-item step-item" data-step="5">
                      <div class="step-header" onclick="toggleStep(5)">
                         <div class="step-number">5</div>
-                        <div class="step-title-text">Start Using Terrateam</div>
+                        <div class="step-title-text">Complete Setup in Terrateam UI</div>
                         <div class="step-chevron">▶</div>
                      </div>
                      <div class="step-content" id="step-5-content" style="display: none;">
                         <div class="step-description">
-                           <strong>Start Using Terrateam</strong>
+                           <strong>Complete Setup in Terrateam UI</strong>
                            <div class="sub-steps">
                               <div class="sub-step">
-                                 <strong>Trigger your first Terrateam operation:</strong> Create a pull request with a Terraform code change to see Terrateam in action
-                              </div>
-                              <div class="sub-step">
-                                 <strong>Enable Terrateam UI Access:</strong>
-                                 <ol style="margin-left: 20px; margin-top: 10px;">
-                                    <li>Navigate to your GitHub App settings: <a href="{{ html_url }}" target="_blank" class="app-link">{{ html_url }}</a></li>
-                                    <li>Check the box "Request user authorization (OAuth) during installation"</li>
-                                    <li>Set the callback URL to:
-                                       <div class="code-block" style="margin: 10px 0;">
-                                          <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
-                                          <code>{{ tunnelUrl }}/api/github/v1/callback</code>
-                                       </div>
-                                    </li>
-                                    <li>Save your changes</li>
-                                 </ol>
-                                 <div class="sub-note">
-                                    <strong>Access your Terrateam UI:</strong> After configuring OAuth, access the UI at:
-                                    <div class="code-block" style="margin: 10px 0;">
-                                       <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
-                                       <code>{{ tunnelUrl }}</code>
-                                    </div>
+                                 <strong>Access the Terrateam UI:</strong>
+                                 <div class="code-block" style="margin: 10px 0;">
+                                    <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                                    <code>{{ tunnelUrl }}</code>
                                  </div>
                               </div>
                               <div class="sub-step">
-                                 <strong>Monitor operations:</strong> View real-time plan and apply progress in the Terrateam UI
+                                 <strong>Follow the Getting Started wizard:</strong> The UI will guide you through:
+                                 <ul style="margin-left: 20px; margin-top: 10px;">
+                                    <li>Installing the GitHub app on your repositories</li>
+                                    <li>Adding the Terrateam workflow to your repos</li>
+                                    <li>Creating your first pull request</li>
+                                    <li>Monitoring your infrastructure changes</li>
+                                 </ul>
+                              </div>
+                              <div class="sub-note">
+                                 <strong>Note:</strong> Make sure you've completed step 4 (Enable Terrateam UI Access) before accessing the UI.
                               </div>
                            </div>
                         </div>
