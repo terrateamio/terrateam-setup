@@ -84,13 +84,14 @@ Do not use this in production!
             };
             
             // Still update the .env file with mock values for development
-            const { id, client_id, client_secret, webhook_secret, pem } = mockResponse.data;
+            const { id, client_id, client_secret, webhook_secret, pem, html_url } = mockResponse.data;
             await this.updateEnv({
                 GITHUB_APP_ID: `${id.toString()}`,
                 GITHUB_APP_PEM: `${pem}`,
                 GITHUB_WEBHOOK_SECRET: `${webhook_secret}`,
                 GITHUB_APP_CLIENT_ID: `${client_id}`,
                 GITHUB_APP_CLIENT_SECRET: `${client_secret}`,
+                GITHUB_APP_URL: `${html_url}`,
             });
             
             return mockResponse;
@@ -108,13 +109,14 @@ Do not use this in production!
             }),
         };
         const response = await octokit.request("POST /app-manifests/:code/conversions", options);
-        const { id, client_id, client_secret, webhook_secret, pem } = response.data;
+        const { id, client_id, client_secret, webhook_secret, pem, html_url } = response.data;
         await this.updateEnv({
             GITHUB_APP_ID: `${id.toString()}`,
             GITHUB_APP_PEM: `${pem}`,
             GITHUB_WEBHOOK_SECRET: `${webhook_secret}`,
             GITHUB_APP_CLIENT_ID: `${client_id}`,
             GITHUB_APP_CLIENT_SECRET: `${client_secret}`,
+            GITHUB_APP_URL: `${html_url}`,
         });
         //return response.data.html_url;
         return response;

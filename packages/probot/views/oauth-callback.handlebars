@@ -112,6 +112,15 @@
          const error = urlParams.get('error');
          const errorDescription = urlParams.get('error_description');
          
+         // Debug logging
+         console.log('OAuth Callback - Full URL:', window.location.href);
+         console.log('OAuth Callback - Search params:', window.location.search);
+         console.log('OAuth Callback - All params:', Object.fromEntries(urlParams));
+         console.log('OAuth Callback - code:', code);
+         console.log('OAuth Callback - state:', state);
+         console.log('OAuth Callback - error:', error);
+         console.log('OAuth Callback - errorDescription:', errorDescription);
+         
          // Show appropriate state
          function showState(stateId, message = null) {
             document.querySelectorAll('.callback-status').forEach(el => el.style.display = 'none');
