@@ -146,6 +146,11 @@
 
          // Handle GitHub sign-in button
          document.getElementById('github-signin-btn').addEventListener('click', function() {
+            // Disable button to prevent double-clicking
+            const button = this;
+            button.disabled = true;
+            button.classList.add('disabled');
+            
             // Store that user needs tunnel
             const tunnelConfig = {
                needsTunnel: true,
@@ -219,6 +224,9 @@
                } else {
                   handleOAuthError(result.error);
                }
+            } else {
+               // No result means user cancelled or closed the popup
+               reEnableAuthButton();
             }
          }
 
@@ -246,6 +254,7 @@
 
          function handleOAuthError(error) {
             showOAuthStatus('error', 'GitHub authentication failed: ' + (error || 'Unknown error'));
+            reEnableAuthButton();
          }
 
          function showOAuthStatus(type, message) {
@@ -264,6 +273,14 @@
             const tunnelSection = document.querySelector('.tunnel-config-section');
             if (tunnelSection) {
                tunnelSection.appendChild(status);
+            }
+         }
+
+         function reEnableAuthButton() {
+            const button = document.getElementById('github-signin-btn');
+            if (button) {
+               button.disabled = false;
+               button.classList.remove('disabled');
             }
          }
 
