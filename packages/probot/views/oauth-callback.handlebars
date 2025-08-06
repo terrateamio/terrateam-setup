@@ -4,7 +4,7 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta http-equiv="X-UA-Compatible" content="ie=edge">
-      <title>GitHub Authentication</title>
+      <title>Authentication</title>
       <link rel="icon" href="/probot/static/logo.svg">
       <link rel="stylesheet" href="/probot/static/primer.css">
       <link rel="stylesheet" href="/probot/static/terrateam-setup.css">
@@ -87,7 +87,7 @@
             <div id="loading-state" class="callback-status">
                <div class="status-icon status-loading">⏳</div>
                <h2 class="status-title">Processing...</h2>
-               <p class="status-message">Completing GitHub authentication</p>
+               <p class="status-message">Completing authentication</p>
             </div>
             
             <div id="success-state" class="callback-status" style="display: none;">
@@ -112,14 +112,26 @@
          const error = urlParams.get('error');
          const errorDescription = urlParams.get('error_description');
          
+         // Detect VCS provider from URL, session storage, or referrer
+         const provider = urlParams.get('provider') || 
+                         sessionStorage.getItem('oauth_provider') ||
+                         (document.referrer.includes('gitlab') ? 'gitlab' : 'github');
+         const messageTypeSuccess = provider === 'gitlab' ? 'GITLAB_OAUTH_SUCCESS' : 'GITHUB_OAUTH_SUCCESS';
+         const messageTypeError = provider === 'gitlab' ? 'GITLAB_OAUTH_ERROR' : 'GITHUB_OAUTH_ERROR';
+         
+         // Clean up provider from session storage
+         sessionStorage.removeItem('oauth_provider');
+         
          // Debug logging
          console.log('OAuth Callback - Full URL:', window.location.href);
          console.log('OAuth Callback - Search params:', window.location.search);
          console.log('OAuth Callback - All params:', Object.fromEntries(urlParams));
+         console.log('OAuth Callback - Detected provider:', provider);
          console.log('OAuth Callback - code:', code);
          console.log('OAuth Callback - state:', state);
          console.log('OAuth Callback - error:', error);
          console.log('OAuth Callback - errorDescription:', errorDescription);
+         console.log('OAuth Callback - Referrer:', document.referrer);
          
          // Show appropriate state
          function showState(stateId, message = null) {
@@ -139,7 +151,7 @@
             // Send error to parent window
             if (window.opener) {
                window.opener.postMessage({
-                  type: 'GITHUB_OAUTH_ERROR',
+                  type: messageTypeError,
                   error: errorDescription || error
                }, window.location.origin);
             }
@@ -155,8 +167,13 @@
             const userLogin = urlParams.get('user_login');
             const userId = urlParams.get('user_id');
             const tunnelId = urlParams.get('tunnel_id');
-            const tunnelUrl = urlParams.get('tunnel_url');
+            let tunnelUrl = urlParams.get('tunnel_url');
             const apiKey = urlParams.get('api_key');
+            
+            // Strip protocol from tunnel URL if present (Terratunnel includes https://)
+            if (tunnelUrl && (tunnelUrl.startsWith('https://') || tunnelUrl.startsWith('http://'))) {
+               tunnelUrl = tunnelUrl.replace(/^https?:\/\//, '');
+            }
             
             if (accessToken && userLogin) {
                // Terratunnel sent tokens directly
@@ -165,12 +182,12 @@
                // Send success to parent window
                if (window.opener) {
                   window.opener.postMessage({
-                     type: 'GITHUB_OAUTH_SUCCESS',
+                     type: messageTypeSuccess,
                      token: accessToken,
                      user: {
                         login: userLogin,
                         id: parseInt(userId) || 0,
-                        avatar_url: `https://github.com/${userLogin}.png`
+                        avatar_url: provider === 'gitlab' ? `https://gitlab.com/${userLogin}.png` : `https://github.com/${userLogin}.png`
                      },
                      tunnel: tunnelId ? {
                         tunnel_id: tunnelId,
@@ -180,6 +197,23 @@
                      sessionId: sessionStorage.getItem('sessionId')
                   }, window.location.origin);
                }
+               
+               // Store in session storage for fallback
+               const storageKey = provider === 'gitlab' ? 'gitlab_oauth_result' : 'github_oauth_result';
+               sessionStorage.setItem(storageKey, JSON.stringify({
+                  success: true,
+                  token: accessToken,
+                  user: {
+                     login: userLogin,
+                     id: parseInt(userId) || 0,
+                     avatar_url: provider === 'gitlab' ? `https://gitlab.com/${userLogin}.png` : `https://github.com/${userLogin}.png`
+                  },
+                  tunnel: tunnelId ? {
+                     tunnel_id: tunnelId,
+                     tunnel_url: tunnelUrl,
+                     api_key: apiKey
+                  } : null
+               }));
                
                // Auto-close after delay
                setTimeout(() => {
@@ -212,7 +246,7 @@
                   // Send success to parent window
                   if (window.opener) {
                      window.opener.postMessage({
-                        type: 'GITHUB_OAUTH_SUCCESS',
+                        type: messageTypeSuccess,
                         token: mockResponse.access_token,
                         user: mockResponse.user,
                         tunnel: mockResponse.tunnel,
@@ -233,8 +267,13 @@
                const userLogin = urlParams.get('user_login');
                const userId = urlParams.get('user_id');
                const tunnelId = urlParams.get('tunnel_id');
-               const tunnelUrl = urlParams.get('tunnel_url');
+               let tunnelUrl = urlParams.get('tunnel_url');
                const apiKey = urlParams.get('api_key');
+               
+               // Strip protocol from tunnel URL if present (Terratunnel includes https://)
+               if (tunnelUrl && (tunnelUrl.startsWith('https://') || tunnelUrl.startsWith('http://'))) {
+                  tunnelUrl = tunnelUrl.replace(/^https?:\/\//, '');
+               }
                
                if (accessToken && userLogin) {
                   showState('success-state');
@@ -242,12 +281,12 @@
                   // Send success to parent window
                   if (window.opener) {
                      window.opener.postMessage({
-                        type: 'GITHUB_OAUTH_SUCCESS',
+                        type: messageTypeSuccess,
                         token: accessToken,
                         user: {
                            login: userLogin,
                            id: parseInt(userId) || 0,
-                           avatar_url: `https://github.com/${userLogin}.png`
+                           avatar_url: provider === 'gitlab' ? `https://gitlab.com/${userLogin}.png` : `https://github.com/${userLogin}.png`
                         },
                         tunnel: tunnelId ? {
                            tunnel_id: tunnelId,
@@ -285,7 +324,7 @@
                         // Send success to parent window
                         if (window.opener) {
                            window.opener.postMessage({
-                              type: 'GITHUB_OAUTH_SUCCESS',
+                              type: messageTypeSuccess,
                               token: data.access_token,
                               user: data.user,
                               tunnel: data.tunnel,
@@ -303,7 +342,7 @@
                         // Send error to parent window
                         if (window.opener) {
                            window.opener.postMessage({
-                              type: 'GITHUB_OAUTH_ERROR',
+                              type: messageTypeError,
                               error: data.error || 'Authentication failed'
                            }, window.location.origin);
                         }
@@ -320,7 +359,7 @@
                      // Send error to parent window
                      if (window.opener) {
                         window.opener.postMessage({
-                           type: 'GITHUB_OAUTH_ERROR',
+                           type: messageTypeError,
                            error: 'Network error occurred'
                         }, window.location.origin);
                      }
@@ -340,7 +379,7 @@
             // Send error to parent window
             if (window.opener) {
                window.opener.postMessage({
-                  type: 'GITHUB_OAUTH_ERROR',
+                  type: messageTypeError,
                   error: 'No authorization code received'
                }, window.location.origin);
             }

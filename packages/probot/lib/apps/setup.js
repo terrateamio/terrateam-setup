@@ -89,6 +89,7 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
     const route = getRouter();
     route.use((0, logging_middleware_1.getLoggingMiddleware)(app.log));
     route.use(body_parser_1.default.urlencoded({ extended: true }));
+    route.use(body_parser_1.default.json());
     
     // Clean up expired sessions every hour
     setInterval(() => {
@@ -132,9 +133,21 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
                     <h2>Quick Links:</h2>
                     <ul>
                         <li><a href="/probot">Start Setup Flow</a> - Normal setup flow</li>
+                        <li><a href="/probot/vcs-selection">VCS Selection</a> - Choose between GitHub and GitLab</li>
                         <li><a href="/probot/tunnel-config">Tunnel Configuration</a> - Configure tunnel settings</li>
-                        <li><a href="/probot/app-setup">App Setup Page</a> - App creation form</li>
-                        <li><a href="/probot/success">Success Page (Dev Mode)</a> - Direct access to success page with mock data</li>
+                        <li><strong>GitHub Flow:</strong>
+                            <ul>
+                                <li><a href="/probot/app-setup">App Setup Page</a> - GitHub app creation form</li>
+                                <li><a href="/probot/success">Success Page (Dev Mode)</a> - Direct access to success page with mock data</li>
+                            </ul>
+                        </li>
+                        <li><strong>GitLab Flow:</strong>
+                            <ul>
+                                <li><a href="/probot/gitlab-pat-setup">GitLab PAT Setup</a> - Configure bot account PAT</li>
+                                <li><a href="/probot/gitlab-manual-setup">GitLab Manual Setup</a> - Manual app creation instructions</li>
+                                <li><a href="/probot/gitlab-success">GitLab Success</a> - Environment variables display</li>
+                            </ul>
+                        </li>
                     </ul>
                     
                     <h2>How to use:</h2>
@@ -152,8 +165,12 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
             res.status(404).send('Development mode is not enabled. Set TERRATEAM_DEV_MODE=true to enable.');
         }
     });
+    route.get("/probot/vcs-selection", async (req, res) => {
+        // VCS provider selection screen
+        res.render("vcs-selection.handlebars");
+    });
     route.get("/probot/tunnel-config", async (req, res) => {
-        // Second screen - tunnel configuration
+        // Third screen - tunnel configuration
         const sessionId = getSessionId(req);
         res.render("tunnel-config.handlebars", { sessionId });
     });
@@ -452,8 +469,21 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
         }
         res.json({ success: true });
     });
+    route.get("/probot/gitlab-pat-setup", async (req, res) => {
+        // GitLab PAT setup screen
+        res.render("gitlab-pat-setup.handlebars");
+    });
+    route.get("/probot/gitlab-manual-setup", async (req, res) => {
+        // GitLab manual app creation screen
+        res.render("gitlab-manual-setup.handlebars");
+    });
+    route.get("/probot/gitlab-success", async (req, res) => {
+        // GitLab success screen
+        res.render("gitlab-success.handlebars");
+    });
+    // Removed gitlab-app-create endpoint - we go directly to manual setup since API creation requires admin permissions
     route.get("/probot/app-setup", async (req, res) => {
-        // Second screen - GitHub app creation
+        // GitHub app creation screen
         const baseUrl = getBaseUrl(req);
         const pkg = setup.pkg;
         const manifest = setup.getManifest(pkg, baseUrl);

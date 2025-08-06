@@ -1713,4 +1713,96 @@ code {
     font-size: 1.27rem;
   }
 }
+
+/* VCS Selection styles */
+.vcs-options {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin: 2rem 0 3rem 0;
+  flex-wrap: wrap;
+}
+
+.vcs-option-card {
+  position: relative;
+  border: 2px solid #e1e4e8;
+  border-radius: 12px;
+  padding: 0;
+  transition: all 0.3s ease;
+  background: #fff;
+  cursor: pointer;
+  width: 280px;
+}
+
+.vcs-option-card:hover {
+  border-color: #009BFF;
+  box-shadow: 0 4px 12px rgba(0, 155, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.vcs-option-card:has(.vcs-radio:checked) {
+  border-color: #009BFF;
+  background: #f8fbff;
+  box-shadow: 0 6px 20px rgba(0, 155, 255, 0.15);
+}
+
+.vcs-radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.vcs-option-label {
+  display: block;
+  padding: 2.5rem 2rem;
+  cursor: pointer;
+  position: relative;
+  text-align: center;
+}
+
+.vcs-option-label::before {
+  content: '';
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #d1d5da;
+  border-radius: 50%;
+  background: #fff;
+  transition: all 0.2s ease;
+}
+
+.vcs-radio:checked + .vcs-option-label::before {
+  border-color: #009BFF;
+  background: #009BFF;
+  box-shadow: inset 0 0 0 4px #fff;
+}
+
+.vcs-option-label .option-header {
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.vcs-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+}
+
+.vcs-option-label .option-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #24292e;
+  margin: 0;
+}
+
+.vcs-option-label .option-description {
+  color: #586069;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  margin: 0;
+}
 EOF < /dev/null

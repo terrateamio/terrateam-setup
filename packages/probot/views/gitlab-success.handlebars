@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en" class="height-full" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Terrateam Setup - Success</title>
+      <link rel="icon" href="/probot/static/logo.svg">
+      <link rel="stylesheet" href="/probot/static/primer.css">
+      <link rel="stylesheet" href="/probot/static/terrateam-setup.css">
+   </head>
+   <body>
+      <div class="setup-container">
+         <div class="setup-card">
+            <img src="/probot/static/logo.svg" alt="Terrateam Logo" class="logo">
+            <h1 class="setup-title">Setup Complete!</h1>
+            <h2 class="setup-subtitle">Your GitLab configuration is ready</h2>
+            <div class="progress-indicator">
+               <div class="progress-step completed">1. Welcome</div>
+               <div class="progress-step completed">2. Choose VCS</div>
+               <div class="progress-step completed">3. Configure Access</div>
+               <div class="progress-step completed">4. GitLab Setup</div>
+               <div class="progress-step active">5. Complete</div>
+            </div>
+            
+            <div class="setup-section">
+               <div class="step-header">
+                  <div class="step-number">1</div>
+                  <h3 class="step-title">Copy Environment Variables</h3>
+               </div>
+               <p class="step-description">Add these variables to your <code>.env</code> file in your Terrateam directory.</p>
+               
+               <div class="step-content">
+                  <textarea id="env-vars" class="env-textarea" readonly></textarea>
+                  <button class="copy-env-btn" onclick="copyEnvVars()">Copy All</button>
+               </div>
+            </div>
+            
+            <div class="setup-section">
+               <div class="step-header">
+                  <div class="step-number">2</div>
+                  <h3 class="step-title">Start Terrateam</h3>
+               </div>
+               <p class="step-description">Run Terrateam using Docker Compose.</p>
+               
+               <div class="step-content">
+                  <div class="command-display">
+                     <code>docker compose up</code>
+                     <button class="copy-command-btn" onclick="copyCommand()">Copy</button>
+                  </div>
+               </div>
+            </div>
+            
+            <div class="setup-section">
+               <div class="step-header">
+                  <div class="step-number">3</div>
+                  <h3 class="step-title">Access Terrateam UI</h3>
+               </div>
+               <p class="step-description">Once Terrateam is running, access the web interface.</p>
+               
+               <div class="step-content">
+                  <div class="ui-url-display">
+                     <span class="url-label">UI URL:</span>
+                     <a id="ui-url" href="#" target="_blank" class="ui-link"></a>
+                  </div>
+                  <div class="step-note">
+                     Log in via the UI and follow the <strong>Getting Started</strong> guide to configure your repositories.
+                  </div>
+               </div>
+            </div>
+            
+            <div class="info-box">
+               <h4 class="info-box-title">⚠️ GitLab Identity Verification</h4>
+               <p class="info-box-text">If you encounter identity verification errors when running pipelines:</p>
+               <div class="info-steps">
+                  <div class="info-step"><span class="step-num">1.</span> Log in as the bot account</div>
+                  <div class="info-step"><span class="step-num">2.</span> Navigate to <strong>Project → Build → Pipelines</strong></div>
+                  <div class="info-step"><span class="step-num">3.</span> Complete the phone verification process</div>
+                  <div class="info-step"><span class="step-num">4.</span> Return to your merge request and comment: <code>terrateam plan</code></div>
+               </div>
+            </div>
+            
+            <div class="navigation-footer">
+               <a href="https://terrateam.io/docs" class="btn-secondary" target="_blank">View Documentation</a>
+               <a href="https://terrateam.io/slack" class="btn-secondary" target="_blank">Get Help</a>
+            </div>
+         </div>
+         <div class="support-section">
+            <h4 class="support-title">Support</h4>
+            <div class="support-links">
+               <a href="https://terrateam.io/docs/" class="support-link">Docs</a>
+               <a href="https://terrateam.io/slack" class="support-link">Slack</a>
+               <a href="https://github.com/terrateamio/terrateam" class="support-link">GitHub</a>
+               <a href="mailto:support@terrateam.io" class="support-link">Email</a>
+            </div>
+         </div>
+      </div>
+      
+      <!-- Fixed help link -->
+      <div class="fixed-help">
+         <a href="https://terrateam.io/slack" class="fixed-help-link" target="_blank">
+            Need help? Join Slack
+         </a>
+      </div>
+      
+      <script>
+         // Gather all configuration
+         const gitlabConfig = JSON.parse(sessionStorage.getItem('gitlabConfig') || '{}');
+         const gitlabAppCredentials = JSON.parse(sessionStorage.getItem('gitlabAppCredentials') || '{}');
+         const tunnelConfig = JSON.parse(sessionStorage.getItem('tunnelConfig') || '{}');
+         
+         // Build environment variables
+         let envVars = '';
+         
+         // GitLab credentials
+         envVars += `GITLAB_APP_ID=${gitlabAppCredentials.id || ''}\n`;
+         envVars += `GITLAB_APP_SECRET=${gitlabAppCredentials.secret || ''}\n`;
+         envVars += `GITLAB_ACCESS_TOKEN=${gitlabConfig.gitlabPat || ''}\n`;
+         
+         // UI base URL
+         if (tunnelConfig.needsTunnel && tunnelConfig.tunnelCredentials) {
+            envVars += `TERRAT_UI_BASE=https://${tunnelConfig.tunnelCredentials.tunnel_url}\n`;
+            envVars += `TERRATUNNEL_API_KEY=${tunnelConfig.tunnelCredentials.api_key}\n`;
+         } else if (tunnelConfig.serverHostname) {
+            envVars += `TERRAT_UI_BASE=https://${tunnelConfig.serverHostname}\n`;
+         }
+         
+         // GitLab instance URL if not gitlab.com
+         if (gitlabConfig.gitlabUrl && gitlabConfig.gitlabUrl !== 'https://gitlab.com') {
+            envVars += `GITLAB_BASE_URL=${gitlabConfig.gitlabUrl}\n`;
+         }
+         
+         // Display environment variables
+         document.getElementById('env-vars').value = envVars;
+         
+         // Set UI URL
+         let uiUrl = '';
+         if (tunnelConfig.needsTunnel && tunnelConfig.tunnelCredentials) {
+            uiUrl = `https://${tunnelConfig.tunnelCredentials.tunnel_url}`;
+         } else if (tunnelConfig.serverHostname) {
+            uiUrl = `https://${tunnelConfig.serverHostname}`;
+         }
+         
+         const uiLink = document.getElementById('ui-url');
+         uiLink.href = uiUrl;
+         uiLink.textContent = uiUrl;
+         
+         function copyEnvVars() {
+            const textarea = document.getElementById('env-vars');
+            textarea.select();
+            document.execCommand('copy');
+            
+            // Visual feedback
+            const button = document.querySelector('.copy-env-btn');
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+               button.textContent = originalText;
+            }, 2000);
+         }
+         
+         function copyCommand() {
+            const tempInput = document.createElement('input');
+            tempInput.value = 'docker compose up';
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            
+            // Visual feedback
+            const button = document.querySelector('.copy-command-btn');
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+               button.textContent = originalText;
+            }, 2000);
+         }
+         
+         // Auto-resize textarea
+         const textarea = document.getElementById('env-vars');
+         textarea.style.height = 'auto';
+         textarea.style.height = (textarea.scrollHeight + 10) + 'px';
+      </script>
+      
+      <style>
+         .setup-section {
+            margin-bottom: 2.5rem;
+         }
+         
+         .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+         }
+         
+         .step-number {
+            background: #009BFF;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.125rem;
+            flex-shrink: 0;
+         }
+         
+         .step-title {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #24292e;
+         }
+         
+         .step-description {
+            color: #586069;
+            font-size: 1.25rem;
+            line-height: 1.6;
+            margin: 0 0 1rem 3rem;
+         }
+         
+         .step-description code {
+            background: #f3f4f6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 1rem;
+            color: #e36209;
+         }
+         
+         .step-content {
+            margin-left: 3rem;
+            background: #f8f9fa;
+            border: 1px solid #d1d5da;
+            border-radius: 8px;
+            padding: 2rem;
+            position: relative;
+         }
+         
+         .env-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            border: 1px solid #d1d5da;
+            border-radius: 6px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.875rem;
+            background: white;
+            resize: vertical;
+            color: #24292e;
+         }
+         
+         .copy-env-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            background: #0366d6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+         }
+         
+         .copy-env-btn:hover {
+            background: #0256c7;
+         }
+         
+         .command-display {
+            background: white;
+            border: 2px solid #0366d6;
+            border-radius: 6px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+         }
+         
+         .command-display code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 1.125rem;
+            color: #24292e;
+            font-weight: 600;
+         }
+         
+         .copy-command-btn {
+            padding: 0.5rem 1rem;
+            background: #0366d6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: background-color 0.2s;
+         }
+         
+         .copy-command-btn:hover {
+            background: #0256c7;
+         }
+         
+         .ui-url-display {
+            background: white;
+            border: 2px solid #0366d6;
+            border-radius: 6px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+         }
+         
+         .url-label {
+            font-weight: 600;
+            color: #24292e;
+            font-size: 1.125rem;
+         }
+         
+         .ui-link {
+            color: #0366d6;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.125rem;
+         }
+         
+         .ui-link:hover {
+            text-decoration: underline;
+         }
+         
+         .step-note {
+            margin-top: 1.25rem;
+            color: #586069;
+            font-size: 1.125rem;
+            line-height: 1.6;
+         }
+         
+         .step-note strong {
+            color: #24292e;
+            font-weight: 600;
+         }
+         
+         /* Info box styling (warning box) */
+         .info-box {
+            background: #fff8c5;
+            border: 1px solid #f9c513;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+         }
+         
+         .info-box-title {
+            color: #735c0f;
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 0 0 0.75rem 0;
+         }
+         
+         .info-box-text {
+            color: #735c0f;
+            font-size: 1rem;
+            margin: 0 0 0.75rem 0;
+            line-height: 1.5;
+         }
+         
+         .info-steps {
+            margin: 0;
+         }
+         
+         .info-step {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #735c0f;
+            display: flex;
+            gap: 0.5rem;
+         }
+         
+         .info-step:last-child {
+            margin-bottom: 0;
+         }
+         
+         .step-num {
+            font-weight: 600;
+            color: #735c0f;
+         }
+         
+         .info-step strong {
+            color: #735c0f;
+            font-weight: 600;
+         }
+         
+         .info-step code {
+            background: white;
+            padding: 0.125rem 0.375rem;
+            border-radius: 3px;
+            font-size: 0.875rem;
+            color: #735c0f;
+            font-weight: 600;
+         }
+         
+         .navigation-footer {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+         }
+         
+         .btn-secondary {
+            background: #f6f8fa;
+            color: #24292e;
+            border: 1px solid #d1d5da;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+         }
+         
+         .btn-secondary:hover {
+            background: #e1e4e8;
+            border-color: #c6cbd1;
+            transform: translateY(-1px);
+         }
+         
+         /* Responsive */
+         @media (max-width: 768px) {
+            .step-description {
+               margin-left: 0;
+            }
+            
+            .step-content {
+               margin-left: 0;
+               padding: 1.5rem;
+            }
+            
+            .command-display {
+               flex-direction: column;
+            }
+            
+            .ui-url-display {
+               flex-direction: column;
+               align-items: flex-start;
+            }
+            
+            .navigation-footer {
+               flex-direction: column;
+            }
+            
+            .btn-secondary {
+               width: 100%;
+               text-align: center;
+            }
+         }
+      </style>
+   </body>
+</html>

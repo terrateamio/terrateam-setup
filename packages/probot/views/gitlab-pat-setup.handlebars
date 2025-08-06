@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en" class="height-full" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Terrateam Setup - GitLab Configuration</title>
+      <link rel="icon" href="/probot/static/logo.svg">
+      <link rel="stylesheet" href="/probot/static/primer.css">
+      <link rel="stylesheet" href="/probot/static/terrateam-setup.css">
+   </head>
+   <body>
+      <div class="setup-container">
+         <div class="setup-card">
+            <img src="/probot/static/logo.svg" alt="Terrateam Logo" class="logo">
+            <h1 class="setup-title">Configure GitLab Bot Account</h1>
+            <h2 class="setup-subtitle">Set up a bot account for Terrateam</h2>
+            <div class="progress-indicator">
+               <div class="progress-step completed">1. Welcome</div>
+               <div class="progress-step completed">2. Choose VCS</div>
+               <div class="progress-step completed">3. Configure Access</div>
+               <div class="progress-step active">4. GitLab Setup</div>
+               <div class="progress-step">5. Complete</div>
+            </div>
+            
+            <div class="setup-section">
+               <div class="step-header">
+                  <div class="step-number">1</div>
+                  <h3 class="step-title">Create a GitLab Bot Account</h3>
+               </div>
+               <p class="step-description">Terrateam needs a dedicated bot account to interact with your GitLab instance.</p>
+               
+               <div class="step-content">
+                  <p class="step-intro">If you don't have a bot account yet:</p>
+                  <div class="step-list">
+                     <div class="step-item">
+                        <span class="step-bullet">1.</span>
+                        <span>Create a new GitLab user account for Terrateam</span>
+                     </div>
+                     <div class="step-item">
+                        <span class="step-bullet">2.</span>
+                        <span>Use a descriptive name like <strong>"acme-terrateam-bot"</strong></span>
+                     </div>
+                     <div class="step-item">
+                        <span class="step-bullet">3.</span>
+                        <span>Use a dedicated email address for this bot account</span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            
+            <div class="setup-section">
+               <div class="step-header">
+                  <div class="step-number">2</div>
+                  <h3 class="step-title">Create a Personal Access Token</h3>
+               </div>
+               <p class="step-description">Generate a Personal Access Token (PAT) for the bot account with API access.</p>
+               
+               <div class="step-content">
+                  <div class="step-list">
+                     <div class="step-item">
+                        <span class="step-bullet">1.</span>
+                        <span>Log in to GitLab as the bot account</span>
+                     </div>
+                     <div class="step-item">
+                        <span class="step-bullet">2.</span>
+                        <span>Go to <strong>User → Preferences → Access Tokens</strong></span>
+                     </div>
+                     <div class="step-item">
+                        <span class="step-bullet">3.</span>
+                        <span>Create a new token with:</span>
+                     </div>
+                  </div>
+                  
+                  <div class="token-requirements">
+                     <div class="requirement-item">
+                        <span class="requirement-label">Name:</span>
+                        <code>terrateam</code>
+                     </div>
+                     <div class="requirement-item">
+                        <span class="requirement-label">Expiration:</span>
+                        <strong>Maximum allowed</strong> (365 days or no expiration)
+                     </div>
+                     <div class="requirement-item">
+                        <span class="requirement-label">Scope:</span>
+                        <span class="scope-checkbox">✓ api</span> (required)
+                     </div>
+                  </div>
+                  
+                  <div class="step-list" style="margin-top: 1rem;">
+                     <div class="step-item">
+                        <span class="step-bullet">4.</span>
+                        <span>Click <strong>"Create token"</strong></span>
+                     </div>
+                     <div class="step-item important">
+                        <span class="step-bullet">5.</span>
+                        <span><strong>Copy the token immediately</strong> - it won't be shown again!</span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            
+            <div class="setup-section">
+               <div class="step-header">
+                  <div class="step-number">3</div>
+                  <h3 class="step-title">Enter Bot Account Details</h3>
+               </div>
+               
+               <label for="gitlab-url" class="form-label">GitLab Instance URL</label>
+               <input type="url" id="gitlab-url" name="gitlab-url" class="form-input" 
+                      placeholder="https://gitlab.com" value="https://gitlab.com">
+               
+               <label for="gitlab-pat" class="form-label">Personal Access Token <span style="color: #e3342f;">*</span></label>
+               <input type="password" id="gitlab-pat" name="gitlab-pat" class="form-input" 
+                      placeholder="glpat-xxxxxxxxxxxxxxxxxxxx" required>
+            </div>
+
+            <button type="button" id="continue-btn" class="btn-primary">Continue to Manual Setup</button>
+            
+            <div class="navigation-footer">
+               <button type="button" id="back-btn" class="btn-text">← Back to Access Configuration</button>
+            </div>
+         </div>
+         <div class="support-section">
+            <h4 class="support-title">Support</h4>
+            <div class="support-links">
+               <a href="https://terrateam.io/docs/" class="support-link">Docs</a>
+               <a href="https://terrateam.io/slack" class="support-link">Slack</a>
+               <a href="https://github.com/terrateamio/terrateam" class="support-link">GitHub</a>
+               <a href="mailto:support@terrateam.io" class="support-link">Email</a>
+            </div>
+         </div>
+      </div>
+      
+      <!-- Fixed help link -->
+      <div class="fixed-help">
+         <a href="https://terrateam.io/slack" class="fixed-help-link" target="_blank">
+            Need help? Join Slack
+         </a>
+      </div>
+      
+      <script>
+         document.getElementById('continue-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const gitlabUrl = document.getElementById('gitlab-url').value.trim();
+            const gitlabPat = document.getElementById('gitlab-pat').value.trim();
+            
+            // Validation
+            if (!gitlabUrl) {
+               alert('Please enter your GitLab instance URL');
+               return;
+            }
+            
+            if (!gitlabPat) {
+               alert('Please enter the Personal Access Token');
+               return;
+            }
+            
+            // Get tunnel configuration
+            const tunnelConfig = JSON.parse(sessionStorage.getItem('tunnelConfig') || '{}');
+            
+            // Determine redirect URL based on tunnel configuration
+            let redirectUrl;
+            if (tunnelConfig.needsTunnel && tunnelConfig.tunnelCredentials) {
+               // tunnel_url already contains just the domain without protocol
+               redirectUrl = `https://${tunnelConfig.tunnelCredentials.tunnel_url}/api/v1/gitlab/callback`;
+            } else if (tunnelConfig.serverHostname) {
+               // Check if serverHostname already has protocol
+               if (tunnelConfig.serverHostname.startsWith('http://') || tunnelConfig.serverHostname.startsWith('https://')) {
+                  redirectUrl = `${tunnelConfig.serverHostname}/api/v1/gitlab/callback`;
+               } else {
+                  redirectUrl = `https://${tunnelConfig.serverHostname}/api/v1/gitlab/callback`;
+               }
+            } else {
+               alert('Error: No server hostname or tunnel URL found. Please go back and configure access.');
+               return;
+            }
+            
+            // Store GitLab configuration
+            sessionStorage.setItem('gitlabConfig', JSON.stringify({
+               gitlabUrl: gitlabUrl,
+               gitlabPat: gitlabPat,
+               redirectUrl: redirectUrl
+            }));
+            
+            // Go directly to manual setup
+            // (Creating apps via API requires admin permissions that most users don't have)
+            window.location.href = '/probot/gitlab-manual-setup';
+         });
+         
+         document.getElementById('back-btn').addEventListener('click', function() {
+            window.location.href = '/probot/tunnel-config';
+         });
+         
+         // Pre-fill GitLab URL if we have it from OAuth
+         const tunnelConfig = JSON.parse(sessionStorage.getItem('tunnelConfig') || '{}');
+         if (tunnelConfig.gitlabUrl) {
+            document.getElementById('gitlab-url').value = tunnelConfig.gitlabUrl;
+         }
+      </script>
+      
+      <style>
+         .setup-section {
+            margin-bottom: 2.5rem;
+         }
+         
+         .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+         }
+         
+         .step-number {
+            background: #009BFF;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.125rem;
+            flex-shrink: 0;
+         }
+         
+         .step-title {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #24292e;
+         }
+         
+         .step-description {
+            color: #586069;
+            font-size: 1.25rem;
+            line-height: 1.6;
+            margin: 0 0 1rem 3rem;
+         }
+         
+         .step-content {
+            margin-left: 3rem;
+            background: #f8f9fa;
+            border: 1px solid #d1d5da;
+            border-radius: 8px;
+            padding: 2rem;
+         }
+         
+         .step-intro {
+            color: #24292e;
+            margin: 0 0 1.25rem 0;
+            font-size: 1.25rem;
+            font-weight: 500;
+         }
+         
+         .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+         }
+         
+         .step-item {
+            display: flex;
+            gap: 0.875rem;
+            align-items: flex-start;
+            line-height: 1.6;
+            color: #24292e;
+            font-size: 1.125rem;
+         }
+         
+         .step-item.important {
+            background: #fff8c5;
+            border: 1px solid #f9c513;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 0.75rem;
+            color: #735c0f;
+            font-weight: 500;
+            font-size: 1.25rem;
+         }
+         
+         .step-bullet {
+            color: #0366d6;
+            font-weight: 700;
+            width: 2rem;
+            flex-shrink: 0;
+            font-size: 1.125rem;
+         }
+         
+         .token-requirements {
+            background: white;
+            border: 2px solid #0366d6;
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1.25rem 0 0 2.875rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+         }
+         
+         .requirement-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            color: #24292e;
+            font-size: 1.125rem;
+         }
+         
+         .requirement-item:not(:last-child) {
+            border-bottom: 1px solid #eaecef;
+         }
+         
+         .requirement-label {
+            color: #24292e;
+            font-weight: 600;
+            min-width: 120px;
+            font-size: 1.125rem;
+         }
+         
+         .scope-checkbox {
+            background: #28a745;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+         }
+         
+         code {
+            background: #f3f4f6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 1rem;
+            color: #e36209;
+         }
+         
+         .step-item strong {
+            color: #24292e;
+            font-weight: 600;
+            background: #fff3cd;
+            padding: 0.25rem 0.375rem;
+            border-radius: 3px;
+         }
+         
+         .requirement-item strong {
+            font-size: 1.125rem;
+         }
+      </style>
+   </body>
+</html>

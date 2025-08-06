@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en" class="height-full" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Terrateam Setup - Manual GitLab App Creation</title>
+      <link rel="icon" href="/probot/static/logo.svg">
+      <link rel="stylesheet" href="/probot/static/primer.css">
+      <link rel="stylesheet" href="/probot/static/terrateam-setup.css">
+   </head>
+   <body>
+      <div class="setup-container">
+         <div class="setup-card">
+            <img src="/probot/static/logo.svg" alt="Terrateam Logo" class="logo">
+            <h1 class="setup-title">Create GitLab Application</h1>
+            <h2 class="setup-subtitle">Manually configure OAuth application</h2>
+            <div class="progress-indicator">
+               <div class="progress-step completed">1. Welcome</div>
+               <div class="progress-step completed">2. Choose VCS</div>
+               <div class="progress-step completed">3. Configure Access</div>
+               <div class="progress-step active">4. GitLab Setup</div>
+               <div class="progress-step">5. Complete</div>
+            </div>
+            
+            <div class="setup-section">
+               <div class="step-header">
+                  <div class="step-number">1</div>
+                  <h3 class="step-title">Create OAuth Application</h3>
+               </div>
+               <p class="step-description">Follow these steps to create an OAuth application in GitLab.</p>
+               
+               <div class="step-content">
+                  <div class="step-list">
+                     <div class="step-item">
+                        <span class="step-bullet">1.</span>
+                        <span>Sign in to GitLab as the bot account</span>
+                     </div>
+                     <div class="step-item">
+                        <span class="step-bullet">2.</span>
+                        <span>Go to <strong>User Avatar → Preferences → Applications</strong></span>
+                     </div>
+                     <div class="step-item">
+                        <span class="step-bullet">3.</span>
+                        <span>Click <strong>"Add new application"</strong></span>
+                     </div>
+                     <div class="step-item">
+                        <span class="step-bullet">4.</span>
+                        <span>Configure with these exact settings:</span>
+                     </div>
+                  </div>
+                  
+                  <div class="token-requirements">
+                     <div class="requirement-item">
+                        <span class="requirement-label">Name:</span>
+                        <code>Terrateam</code>
+                     </div>
+                     <div class="requirement-item">
+                        <span class="requirement-label">Redirect URI:</span>
+                        <div class="copy-field">
+                           <input type="text" id="redirect-url" readonly class="copy-input" value="Loading...">
+                           <button class="copy-btn" onclick="copyToClipboard('redirect-url')">Copy</button>
+                        </div>
+                     </div>
+                     <div class="requirement-item">
+                        <span class="requirement-label">Scopes:</span>
+                        <span class="scope-checkbox">✓ api</span> (required)
+                     </div>
+                  </div>
+                  
+                  <div class="step-list" style="margin-top: 1rem;">
+                     <div class="step-item">
+                        <span class="step-bullet">5.</span>
+                        <span>Click <strong>"Save application"</strong></span>
+                     </div>
+                     <div class="step-item important">
+                        <span class="step-bullet">6.</span>
+                        <span><strong>Copy the Application ID and Secret immediately</strong> - keep this page open!</span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            
+            <div class="setup-section">
+               <div class="step-header">
+                  <div class="step-number">2</div>
+                  <h3 class="step-title">Enter Application Credentials</h3>
+               </div>
+               
+               <label for="app-id" class="form-label">Application ID <span style="color: #e3342f;">*</span></label>
+               <input type="text" id="app-id" name="app-id" class="form-input" 
+                      placeholder="e.g., 1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcd" required>
+               
+               <label for="app-secret" class="form-label">Application Secret <span style="color: #e3342f;">*</span></label>
+               <input type="password" id="app-secret" name="app-secret" class="form-input" 
+                      placeholder="Paste your application secret here" required>
+            </div>
+            
+            <button type="button" id="continue-btn" class="btn-primary">Continue</button>
+            
+            <div class="navigation-footer">
+               <button type="button" id="back-btn" class="btn-text">← Back to PAT Setup</button>
+            </div>
+         </div>
+         <div class="support-section">
+            <h4 class="support-title">Support</h4>
+            <div class="support-links">
+               <a href="https://terrateam.io/docs/" class="support-link">Docs</a>
+               <a href="https://terrateam.io/slack" class="support-link">Slack</a>
+               <a href="https://github.com/terrateamio/terrateam" class="support-link">GitHub</a>
+               <a href="mailto:support@terrateam.io" class="support-link">Email</a>
+            </div>
+         </div>
+      </div>
+      
+      <!-- Fixed help link -->
+      <div class="fixed-help">
+         <a href="https://terrateam.io/slack" class="fixed-help-link" target="_blank">
+            Need help? Join Slack
+         </a>
+      </div>
+      
+      <script>
+         
+         // Get and display redirect URL
+         const gitlabConfig = JSON.parse(sessionStorage.getItem('gitlabConfig') || '{}');
+         const redirectUrlInput = document.getElementById('redirect-url');
+         
+         if (gitlabConfig.redirectUrl) {
+            redirectUrlInput.value = gitlabConfig.redirectUrl;
+         } else {
+            // Fallback if no redirect URL is found
+            const tunnelConfig = JSON.parse(sessionStorage.getItem('tunnelConfig') || '{}');
+            if (tunnelConfig.serverHostname) {
+               const protocol = tunnelConfig.serverHostname.includes('localhost') ? 'http' : 'https';
+               redirectUrlInput.value = `${protocol}://${tunnelConfig.serverHostname}/api/v1/gitlab/callback`;
+            } else {
+               redirectUrlInput.value = 'Error: No redirect URL found';
+            }
+         }
+         
+         function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            element.select();
+            document.execCommand('copy');
+            
+            // Visual feedback
+            const button = element.nextElementSibling;
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+               button.textContent = originalText;
+            }, 2000);
+         }
+         
+         document.getElementById('continue-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const appId = document.getElementById('app-id').value.trim();
+            const appSecret = document.getElementById('app-secret').value.trim();
+            
+            if (!appId) {
+               alert('Please enter the Application ID');
+               return;
+            }
+            
+            if (!appSecret) {
+               alert('Please enter the Application Secret');
+               return;
+            }
+            
+            // Store credentials
+            sessionStorage.setItem('gitlabAppCredentials', JSON.stringify({
+               id: appId,
+               secret: appSecret,
+               manual: true
+            }));
+            
+            // Proceed to success screen
+            window.location.href = '/probot/gitlab-success';
+         });
+         
+         document.getElementById('back-btn').addEventListener('click', function() {
+            window.location.href = '/probot/gitlab-pat-setup';
+         });
+      </script>
+      
+      <style>
+         .setup-section {
+            margin-bottom: 2.5rem;
+         }
+         
+         .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+         }
+         
+         .step-number {
+            background: #009BFF;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.125rem;
+            flex-shrink: 0;
+         }
+         
+         .step-title {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #24292e;
+         }
+         
+         .step-description {
+            color: #586069;
+            font-size: 1.25rem;
+            line-height: 1.6;
+            margin: 0 0 1rem 3rem;
+         }
+         
+         .step-content {
+            margin-left: 3rem;
+            background: #f8f9fa;
+            border: 1px solid #d1d5da;
+            border-radius: 8px;
+            padding: 2rem;
+         }
+         
+         .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+         }
+         
+         .step-item {
+            display: flex;
+            gap: 0.875rem;
+            align-items: flex-start;
+            line-height: 1.6;
+            color: #24292e;
+            font-size: 1.125rem;
+         }
+         
+         .step-item.important {
+            background: #fff8c5;
+            border: 1px solid #f9c513;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 0.75rem;
+            color: #735c0f;
+            font-weight: 500;
+            font-size: 1.25rem;
+         }
+         
+         .step-bullet {
+            color: #0366d6;
+            font-weight: 700;
+            width: 2rem;
+            flex-shrink: 0;
+            font-size: 1.125rem;
+         }
+         
+         .token-requirements {
+            background: white;
+            border: 2px solid #0366d6;
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1.25rem 0 0 2.875rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+         }
+         
+         .requirement-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            color: #24292e;
+            font-size: 1.125rem;
+         }
+         
+         .requirement-item:not(:last-child) {
+            border-bottom: 1px solid #eaecef;
+         }
+         
+         .requirement-label {
+            color: #24292e;
+            font-weight: 600;
+            min-width: 120px;
+            font-size: 1.125rem;
+         }
+         
+         .scope-checkbox {
+            background: #28a745;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+         }
+         
+         code {
+            background: #f3f4f6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 1rem;
+            color: #e36209;
+         }
+         
+         .step-item strong {
+            color: #24292e;
+            font-weight: 600;
+            background: #fff3cd;
+            padding: 0.25rem 0.375rem;
+            border-radius: 3px;
+         }
+         
+         /* Copy field specific styling */
+         .copy-field {
+            display: flex;
+            gap: 0.5rem;
+            flex: 1;
+         }
+         
+         .copy-input {
+            flex: 1;
+            padding: 0.375rem 0.75rem;
+            border: 1px solid #d1d5da;
+            border-radius: 4px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.875rem;
+            background: white;
+            color: #24292e;
+         }
+         
+         .copy-btn {
+            padding: 0.375rem 0.875rem;
+            background: #0366d6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: background-color 0.2s;
+         }
+         
+         .copy-btn:hover {
+            background: #0256c7;
+         }
+         
+         /* Info box styling */
+         .info-box {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+         }
+         
+         .info-box-title {
+            color: #0369a1;
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 0 0 0.75rem 0;
+         }
+         
+         .info-box-text {
+            color: #0369a1;
+            font-size: 1rem;
+            margin: 0 0 0.75rem 0;
+            line-height: 1.5;
+         }
+         
+         .info-box-list {
+            margin: 0;
+            padding-left: 1.5rem;
+            color: #0369a1;
+         }
+         
+         .info-box-list li {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            line-height: 1.5;
+         }
+         
+         .info-box-list code {
+            background: white;
+            padding: 0.125rem 0.375rem;
+            border-radius: 3px;
+            font-size: 0.875rem;
+            color: #0369a1;
+            font-weight: 600;
+         }
+         
+         /* Responsive */
+         @media (max-width: 768px) {
+            .copy-field {
+               flex-direction: column;
+            }
+            
+            .copy-btn {
+               width: 100%;
+            }
+            
+            .step-description {
+               margin-left: 0;
+            }
+            
+            .step-content {
+               margin-left: 0;
+               padding: 1.5rem;
+            }
+            
+            .token-requirements {
+               margin-left: 0;
+            }
+         }
+      </style>
+   </body>
+</html>
