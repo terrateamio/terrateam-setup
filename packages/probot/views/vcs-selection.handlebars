@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" class="height-full" data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Terrateam Setup - Choose VCS Provider</title>
+      <link rel="icon" href="/probot/static/logo.svg">
+      <link rel="stylesheet" href="/probot/static/primer.css">
+      <link rel="stylesheet" href="/probot/static/terrateam-setup.css">
+   </head>
+   <body>
+      <div class="setup-container">
+         <div class="setup-card">
+            <img src="/probot/static/logo.svg" alt="Terrateam Logo" class="logo">
+            <h1 class="setup-title">Choose Your VCS Provider</h1>
+            <h2 class="setup-subtitle">Select where your code repositories are hosted</h2>
+            <div class="progress-indicator">
+               <div class="progress-step completed">1. Welcome</div>
+               <div class="progress-step active">2. Choose VCS</div>
+               <div class="progress-step">3. Configure Access</div>
+               <div class="progress-step">4. Create App</div>
+               <div class="progress-step">5. Complete</div>
+            </div>
+            <p class="setup-description">Terrateam supports both GitHub and GitLab. Choose your version control system below.</p>
+            
+            <div class="vcs-options">
+               <div class="vcs-option-card">
+                  <input type="radio" id="github-vcs" name="vcs-provider" value="github" class="vcs-radio" checked>
+                  <label for="github-vcs" class="vcs-option-label">
+                     <div class="option-header">
+                        <svg height="48" width="48" viewBox="0 0 16 16" class="vcs-icon">
+                           <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                        </svg>
+                        <div class="option-title">GitHub</div>
+                     </div>
+                     <div class="option-description">Use GitHub or GitHub Enterprise Server</div>
+                  </label>
+               </div>
+               
+               <div class="vcs-option-card">
+                  <input type="radio" id="gitlab-vcs" name="vcs-provider" value="gitlab" class="vcs-radio">
+                  <label for="gitlab-vcs" class="vcs-option-label">
+                     <div class="option-header">
+                        <svg height="48" width="48" viewBox="0 0 24 24" class="vcs-icon">
+                           <path fill="#E24329" d="M12 2L2 8.5L12 22L22 8.5L12 2Z"/>
+                           <path fill="#FC6D26" d="M12 2L2 8.5L7.5 8.5L12 2Z"/>
+                           <path fill="#FC6D26" d="M12 2L22 8.5L16.5 8.5L12 2Z"/>
+                           <path fill="#FCA326" d="M2 8.5L7.5 8.5L12 22L2 8.5Z"/>
+                           <path fill="#FCA326" d="M22 8.5L16.5 8.5L12 22L22 8.5Z"/>
+                        </svg>
+                        <div class="option-title">GitLab</div>
+                     </div>
+                     <div class="option-description">Use GitLab or self-hosted GitLab</div>
+                  </label>
+               </div>
+            </div>
+
+            <button type="button" id="next-btn" class="btn-primary">Next</button>
+            
+            <div class="navigation-footer">
+               <button type="button" id="back-btn" class="btn-text">← Back to Welcome</button>
+            </div>
+         </div>
+         <div class="support-section">
+            <h4 class="support-title">Support</h4>
+            <div class="support-links">
+               <a href="https://terrateam.io/docs/" class="support-link">Docs</a>
+               <a href="https://terrateam.io/slack" class="support-link">Slack</a>
+               <a href="https://github.com/terrateamio/terrateam" class="support-link">GitHub</a>
+               <a href="mailto:support@terrateam.io" class="support-link">Email</a>
+            </div>
+         </div>
+      </div>
+      
+      <!-- Fixed help link -->
+      <div class="fixed-help">
+         <a href="https://terrateam.io/slack" class="fixed-help-link" target="_blank">
+            Need help? Join Slack
+         </a>
+      </div>
+      
+      <script>
+         document.getElementById('next-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Get selected VCS provider
+            const selectedVcs = document.querySelector('input[name="vcs-provider"]:checked').value;
+            
+            // Store VCS provider in session storage
+            sessionStorage.setItem('vcsProvider', selectedVcs);
+            
+            // Navigate to tunnel configuration screen
+            window.location.href = '/probot/tunnel-config';
+         });
+         
+         document.getElementById('back-btn').addEventListener('click', function() {
+            window.location.href = '/probot';
+         });
+      </script>
+   </body>
+</html>

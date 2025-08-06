@@ -13,20 +13,21 @@
       <div class="setup-container">
          <div class="setup-card">
             <img src="/probot/static/logo.svg" alt="Terrateam Logo" class="logo">
-            <h1 class="app-setup-title">Create GitHub App</h1>
-            <h2 class="setup-subtitle">Let's create your private GitHub app</h2>
+            <h1 class="app-setup-title">Create <span id="vcs-app-name">GitHub</span> App</h1>
+            <h2 class="setup-subtitle">Let's create your private <span id="vcs-app-name2">GitHub</span> app</h2>
             <div class="progress-indicator">
                <div class="progress-step completed">1. Welcome</div>
-               <div class="progress-step completed">2. Configure Access</div>
-               <div class="progress-step active">3. Create App</div>
-               <div class="progress-step">4. Complete</div>
+               <div class="progress-step completed">2. Choose VCS</div>
+               <div class="progress-step completed">3. Configure Access</div>
+               <div class="progress-step active">4. Create App</div>
+               <div class="progress-step">5. Complete</div>
             </div>
             <p class="setup-description">This will enable Terrateam to work with your repositories.</p>
             <div class="divider"></div>
                
             <div class="form-section">
-               <label for="github-org" class="form-label">GitHub Organization <span class="optional-text">(optional)</span></label>
-               <input type="text" id="github-org" name="github-org" class="form-input" placeholder="Leave blank for personal account" value="{{ orgName }}">
+               <label for="vcs-org" class="form-label"><span id="vcs-org-label">GitHub</span> Organization <span class="optional-text">(optional)</span></label>
+               <input type="text" id="vcs-org" name="vcs-org" class="form-input" placeholder="Leave blank for personal account" value="{{ orgName }}">
                
                <div class="checkbox-container">
                   <input type="checkbox" id="onboarding-call" name="onboarding-call" class="checkbox-input" checked>
@@ -61,10 +62,29 @@
       </div>
       
       <script>
+         // Get VCS provider from session storage and update UI
+         const vcsProvider = sessionStorage.getItem('vcsProvider') || 'github';
+         const vcsDisplayName = vcsProvider === 'gitlab' ? 'GitLab' : 'GitHub';
+         
+         // Update VCS provider references in the UI
+         document.getElementById('vcs-app-name').textContent = vcsDisplayName;
+         document.getElementById('vcs-app-name2').textContent = vcsDisplayName;
+         document.getElementById('vcs-org-label').textContent = vcsDisplayName;
+         
+         // Show warning for GitLab since it's not fully implemented yet
+         if (vcsProvider === 'gitlab') {
+            const setupCard = document.querySelector('.setup-card');
+            const warningDiv = document.createElement('div');
+            warningDiv.className = 'warning-box';
+            warningDiv.style.cssText = 'background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 1rem; margin: 1rem 0; color: #856404;';
+            warningDiv.innerHTML = '<strong>⚠️ Note:</strong> GitLab App creation is not yet implemented in this setup wizard. You will need to manually create a GitLab application. <a href="https://docs.gitlab.com/ee/integration/oauth_provider.html" target="_blank">See GitLab OAuth documentation</a>.';
+            setupCard.insertBefore(warningDiv, setupCard.querySelector('.form-section'));
+         }
+         
          document.getElementById('create-app-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const orgInput = document.getElementById('github-org');
+            const orgInput = document.getElementById('vcs-org');
             const onboardingInput = document.getElementById('onboarding-call');
             
             const orgValue = orgInput.value.trim();

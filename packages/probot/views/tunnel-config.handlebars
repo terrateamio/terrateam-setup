@@ -17,15 +17,16 @@
             <h2 class="setup-subtitle">How will GitHub reach your Terrateam server?</h2>
             <div class="progress-indicator">
                <div class="progress-step completed">1. Welcome</div>
-               <div class="progress-step active">2. Configure Access</div>
-               <div class="progress-step">3. Create App</div>
-               <div class="progress-step">4. Complete</div>
+               <div class="progress-step completed">2. Choose VCS</div>
+               <div class="progress-step active">3. Configure Access</div>
+               <div class="progress-step">4. Create App</div>
+               <div class="progress-step">5. Complete</div>
             </div>
-            <p class="setup-description">GitHub needs to send webhooks to your Terrateam server. Choose your setup method below.</p>
+            <p class="setup-description"><span id="vcs-provider-name">Your VCS provider</span> needs to send webhooks to your Terrateam server. Choose your setup method below.</p>
             
             <!-- Step 1: Choose webhook delivery method -->
             <div class="config-section">
-               <h3 class="section-title">How will GitHub reach your server?</h3>
+               <h3 class="section-title">How will <span class="vcs-name">your VCS provider</span> reach your server?</h3>
                <div class="tunnel-options">
                   <div class="tunnel-option-card">
                      <input type="radio" id="yes-tunnel" name="tunnel-type" value="tunnel" class="tunnel-radio" checked>
@@ -55,12 +56,19 @@
             <div id="tunnel-config" class="action-section" style="display: block;">
                <div class="action-box">
                   <h3 class="action-title">Set up your tunnel</h3>
-                  <p class="action-description">Authenticate with GitHub to provision your secure tunnel. This takes just a few seconds.</p>
-                  <button type="button" id="github-signin-btn" class="btn-primary btn-hero">
-                     <svg height="24" width="24" viewBox="0 0 16 16" class="github-icon">
+                  <p class="action-description">Authenticate with <span class="vcs-name">your VCS provider</span> to provision your secure tunnel. This takes just a few seconds.</p>
+                  <button type="button" id="vcs-signin-btn" class="btn-primary btn-hero">
+                     <svg height="24" width="24" viewBox="0 0 16 16" class="vcs-icon-btn github-icon">
                         <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
                      </svg>
-                     Authenticate with GitHub
+                     <svg height="24" width="24" viewBox="0 0 24 24" class="vcs-icon-btn gitlab-icon" style="display: none;">
+                        <path fill="#E24329" d="M12 2L2 8.5L12 22L22 8.5L12 2Z"/>
+                        <path fill="#FC6D26" d="M12 2L2 8.5L7.5 8.5L12 2Z"/>
+                        <path fill="#FC6D26" d="M12 2L22 8.5L16.5 8.5L12 2Z"/>
+                        <path fill="#FCA326" d="M2 8.5L7.5 8.5L12 22L2 8.5Z"/>
+                        <path fill="#FCA326" d="M22 8.5L16.5 8.5L12 22L22 8.5Z"/>
+                     </svg>
+                     <span id="auth-btn-text">Authenticate with GitHub</span>
                   </button>
                   <p class="action-note">This will open a secure popup window</p>
                </div>
@@ -87,12 +95,25 @@
                <div class="action-box">
                   <h3 class="action-title">Continue without tunnel</h3>
                   <p class="action-description">You'll need to configure your server's webhook URL manually in the next step.</p>
+                  
+                  <div id="gitlab-hostname-input" style="display: none; margin: 1.5rem 0;">
+                     <label for="server-hostname" class="form-label" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">
+                        Server Hostname <span style="color: #e3342f;">*</span>
+                     </label>
+                     <p style="color: #586069; font-size: 0.875rem; margin-bottom: 0.75rem;">
+                        Enter the hostname where your Terrateam server will be accessible (e.g., terrateam.example.com)
+                     </p>
+                     <input type="text" id="server-hostname" name="server-hostname" class="form-input" 
+                            placeholder="terrateam.example.com" 
+                            style="width: 100%; padding: 0.75rem; font-size: 1rem; border: 1px solid #d1d5da; border-radius: 6px;">
+                  </div>
+                  
                   <button type="button" id="continue-no-tunnel" class="btn-primary btn-hero">Continue to Create App</button>
                </div>
             </div>
 
             <div class="navigation-footer">
-               <button type="button" id="back-btn" class="btn-text">← Back to Welcome</button>
+               <button type="button" id="back-btn" class="btn-text">← Back to VCS Selection</button>
             </div>
          </div>
          <div class="support-section">
@@ -118,11 +139,33 @@
          const sessionId = '{{ sessionId }}';
          sessionStorage.setItem('sessionId', sessionId);
          
+         // Get VCS provider from session storage and update UI
+         const vcsProvider = sessionStorage.getItem('vcsProvider') || 'github';
+         const vcsDisplayName = vcsProvider === 'gitlab' ? 'GitLab' : 'GitHub';
+         
+         // Update VCS provider references in the UI
+         document.getElementById('vcs-provider-name').textContent = vcsDisplayName;
+         document.querySelectorAll('.vcs-name').forEach(el => {
+            el.textContent = vcsDisplayName;
+         });
+         
+         // Update authentication button based on VCS provider
+         if (vcsProvider === 'gitlab') {
+            document.querySelector('.github-icon').style.display = 'none';
+            document.querySelector('.gitlab-icon').style.display = 'inline';
+            document.getElementById('auth-btn-text').textContent = 'Authenticate with GitLab';
+         } else {
+            document.querySelector('.github-icon').style.display = 'inline';
+            document.querySelector('.gitlab-icon').style.display = 'none';
+            document.getElementById('auth-btn-text').textContent = 'Authenticate with GitHub';
+         }
+         
          // Handle tunnel type selection (Yes/No)
          document.querySelectorAll('input[name="tunnel-type"]').forEach(radio => {
             radio.addEventListener('change', function() {
                const tunnelConfig = document.getElementById('tunnel-config');
                const noTunnelConfig = document.getElementById('no-tunnel-config');
+               const gitlabHostnameInput = document.getElementById('gitlab-hostname-input');
                
                if (this.value === 'tunnel') {
                   tunnelConfig.style.display = 'block';
@@ -130,6 +173,11 @@
                } else {
                   tunnelConfig.style.display = 'none';
                   noTunnelConfig.style.display = 'block';
+                  
+                  // Show hostname input for GitLab users not using tunnel
+                  if (vcsProvider === 'gitlab') {
+                     gitlabHostnameInput.style.display = 'block';
+                  }
                }
             });
          });
@@ -144,8 +192,8 @@
             }
          });
 
-         // Handle GitHub sign-in button
-         document.getElementById('github-signin-btn').addEventListener('click', function() {
+         // Handle VCS sign-in button
+         document.getElementById('vcs-signin-btn').addEventListener('click', function() {
             // Disable button to prevent double-clicking
             const button = this;
             button.disabled = true;
@@ -159,8 +207,12 @@
             
             sessionStorage.setItem('tunnelConfig', JSON.stringify(tunnelConfig));
             
-            // Open GitHub OAuth in popup window
-            openGitHubOAuth();
+            // Open VCS OAuth in popup window
+            if (vcsProvider === 'gitlab') {
+               openGitLabOAuth();
+            } else {
+               openGitHubOAuth();
+            }
          });
 
          function openGitHubOAuth() {
@@ -178,6 +230,10 @@
             console.log('Opening OAuth URL:', oauthUrl);
             console.log('Redirect URI:', redirectUri);
             console.log('State:', state);
+            console.log('Provider:', 'github');
+            
+            // Store provider in session for callback to detect
+            sessionStorage.setItem('oauth_provider', 'github');
             
             // Open popup window
             const popup = window.open(
@@ -211,13 +267,71 @@
             });
          }
 
+         function openGitLabOAuth() {
+            // Use Terratunnel's GitLab OAuth proxy
+            const terratunnelOAuthUrl = 'https://tunnel.terrateam.dev/auth/gitlab/authorize';
+            const redirectUri = window.location.origin + '/probot/oauth-callback';
+            
+            // Generate a simple state parameter for our callback
+            const state = Math.random().toString(36).substring(2, 15);
+            
+            // Build the OAuth URL to go through Terratunnel proxy
+            // Remove the provider parameter as it's not needed for the GitLab-specific endpoint
+            const oauthUrl = `${terratunnelOAuthUrl}?redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`;
+            
+            // Debug logging
+            console.log('Opening GitLab OAuth proxy URL:', oauthUrl);
+            console.log('Redirect URI:', redirectUri);
+            console.log('State:', state);
+            
+            // Store provider in session for callback to detect
+            sessionStorage.setItem('oauth_provider', 'gitlab');
+            
+            // IMPORTANT: Make sure we're opening the Terratunnel proxy URL, not GitLab directly
+            console.log('About to open popup with URL:', oauthUrl);
+            
+            // Open popup window
+            const popup = window.open(
+               oauthUrl,
+               'gitlab-oauth',
+               'width=600,height=700,scrollbars=yes,resizable=yes,status=yes,location=yes,toolbar=no,menubar=no'
+            );
+            
+            // Monitor popup for completion
+            const checkClosed = setInterval(function() {
+               if (popup.closed) {
+                  clearInterval(checkClosed);
+                  // Check if authentication was successful
+                  checkOAuthResult();
+               }
+            }, 1000);
+            
+            // Handle message from popup
+            window.addEventListener('message', function(event) {
+               if (event.origin !== window.location.origin) return;
+               
+               if (event.data.type === 'GITLAB_OAUTH_SUCCESS') {
+                  clearInterval(checkClosed);
+                  popup.close();
+                  handleOAuthSuccess(event.data);
+               } else if (event.data.type === 'GITLAB_OAUTH_ERROR') {
+                  clearInterval(checkClosed);
+                  popup.close();
+                  handleOAuthError(event.data.error);
+               }
+            });
+         }
 
          function checkOAuthResult() {
-            // Check session storage for OAuth result
-            const oauthResult = sessionStorage.getItem('github_oauth_result');
+            // Check session storage for OAuth result (works for both GitHub and GitLab)
+            const githubResult = sessionStorage.getItem('github_oauth_result');
+            const gitlabResult = sessionStorage.getItem('gitlab_oauth_result');
+            const oauthResult = githubResult || gitlabResult;
+            
             if (oauthResult) {
                const result = JSON.parse(oauthResult);
                sessionStorage.removeItem('github_oauth_result');
+               sessionStorage.removeItem('gitlab_oauth_result');
                
                if (result.success) {
                   handleOAuthSuccess(result);
@@ -239,21 +353,28 @@
             
             if (data.tunnel) {
                tunnelConfig.tunnelCredentials = data.tunnel;
-               showOAuthStatus('success', 'GitHub authentication successful! Tunnel configured: ' + data.tunnel.tunnel_url);
+               const vcsName = vcsProvider === 'gitlab' ? 'GitLab' : 'GitHub';
+               showOAuthStatus('success', `${vcsName} authentication successful! Tunnel configured: ` + data.tunnel.tunnel_url);
             } else {
-               showOAuthStatus('success', 'GitHub authentication successful! Setting up your tunnel...');
+               const vcsName = vcsProvider === 'gitlab' ? 'GitLab' : 'GitHub';
+               showOAuthStatus('success', `${vcsName} authentication successful! Setting up your tunnel...`);
             }
             
             sessionStorage.setItem('tunnelConfig', JSON.stringify(tunnelConfig));
             
-            // Proceed to app setup after brief delay
+            // Proceed to appropriate next screen after brief delay
             setTimeout(() => {
-               window.location.href = '/probot/app-setup';
+               if (vcsProvider === 'gitlab') {
+                  window.location.href = '/probot/gitlab-pat-setup';
+               } else {
+                  window.location.href = '/probot/app-setup';
+               }
             }, 2000);
          }
 
          function handleOAuthError(error) {
-            showOAuthStatus('error', 'GitHub authentication failed: ' + (error || 'Unknown error'));
+            const vcsName = vcsProvider === 'gitlab' ? 'GitLab' : 'GitHub';
+            showOAuthStatus('error', `${vcsName} authentication failed: ` + (error || 'Unknown error'));
             reEnableAuthButton();
          }
 
@@ -277,7 +398,7 @@
          }
 
          function reEnableAuthButton() {
-            const button = document.getElementById('github-signin-btn');
+            const button = document.getElementById('vcs-signin-btn');
             if (button) {
                button.disabled = false;
                button.classList.remove('disabled');
@@ -286,20 +407,43 @@
 
          // Handle navigation
          document.getElementById('back-btn').addEventListener('click', function() {
-            window.location.href = '/probot';
+            window.location.href = '/probot/vcs-selection';
          });
 
          // Handle continue without tunnel button
          document.getElementById('continue-no-tunnel').addEventListener('click', function() {
-            // Store tunnel configuration in session storage
-            const tunnelConfig = {
-               needsTunnel: false
-            };
+            // For GitLab without tunnel, validate hostname
+            if (vcsProvider === 'gitlab') {
+               const hostnameInput = document.getElementById('server-hostname');
+               const hostname = hostnameInput ? hostnameInput.value.trim() : '';
+               
+               if (!hostname) {
+                  alert('Please enter your server hostname');
+                  hostnameInput.focus();
+                  return;
+               }
+               
+               // Store tunnel configuration with hostname
+               const tunnelConfig = {
+                  needsTunnel: false,
+                  serverHostname: hostname
+               };
+               
+               sessionStorage.setItem('tunnelConfig', JSON.stringify(tunnelConfig));
+               
+               // Navigate to GitLab PAT setup screen
+               window.location.href = '/probot/gitlab-pat-setup';
+            } else {
+               // GitHub flow - continue as before
+               const tunnelConfig = {
+                  needsTunnel: false
+               };
 
-            sessionStorage.setItem('tunnelConfig', JSON.stringify(tunnelConfig));
-            
-            // Navigate to app setup screen
-            window.location.href = '/probot/app-setup';
+               sessionStorage.setItem('tunnelConfig', JSON.stringify(tunnelConfig));
+               
+               // Navigate to app setup screen
+               window.location.href = '/probot/app-setup';
+            }
          });
       </script>
    </body>
