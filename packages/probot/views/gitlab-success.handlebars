@@ -125,11 +125,6 @@
             envVars += `TERRAT_UI_BASE=https://${tunnelConfig.serverHostname}\n`;
          }
          
-         // GitLab instance URL if not gitlab.com
-         if (gitlabConfig.gitlabUrl && gitlabConfig.gitlabUrl !== 'https://gitlab.com') {
-            envVars += `GITLAB_BASE_URL=${gitlabConfig.gitlabUrl}\n`;
-         }
-         
          // Display environment variables
          document.getElementById('env-vars').value = envVars;
          
