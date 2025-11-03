@@ -531,11 +531,12 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
                                     tunnelUrl = `https://${tunnelUrl}`;
                                 }
                                 envContent += `TERRAT_UI_BASE=${tunnelUrl}\n`;
+                                envContent += `TERRAT_WEB_BASE_URL=${tunnelUrl}\n`;
                             }
-                            
+
                             env_file = envContent;
                         }
-                        
+
                         // Write updated .env file in dev mode
                         fs.writeFileSync(path_1.default.join(process.cwd(), ".env"), env_file);
                     } catch (tunnelError) {
@@ -559,13 +560,17 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
                     if (terratUiBaseMatch) {
                         tunnelUrl = terratUiBaseMatch[1];
                     }
+                    const terratWebBaseUrlMatch = envContent.match(/^TERRAT_WEB_BASE_URL=(.+)$/m);
+                    if (!tunnelUrl && terratWebBaseUrlMatch) {
+                        tunnelUrl = terratWebBaseUrlMatch[1];
+                    }
                 }
-                
+
                 // Use fallback URL if tunnelUrl is still not set (production path without tunnel)
                 if (!tunnelUrl) {
                     tunnelUrl = 'https://terrateam.example.com';
                 }
-                
+
                 res.render("success.handlebars", { env_file, html_url, id, client_id, client_secret, webhook_secret, pem, tunnelUrl });
                 return;
             } catch (e) {
@@ -615,11 +620,12 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
                                 tunnelUrl = `https://${tunnelUrl}`;
                             }
                             envContent += `TERRAT_UI_BASE=${tunnelUrl}\n`;
+                            envContent += `TERRAT_WEB_BASE_URL=${tunnelUrl}\n`;
                         }
-                        
+
                         env_file = envContent;
                     }
-                    
+
                     // Write updated .env file
                     fs.writeFileSync(path_1.default.join(process.cwd(), ".env"), env_file);
                 } catch (tunnelError) {
@@ -683,9 +689,10 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
                                 tunnelUrl = `https://${tunnelUrl}`;
                             }
                             envContent += `TERRAT_UI_BASE=${tunnelUrl}\n`;
-                            
+                            envContent += `TERRAT_WEB_BASE_URL=${tunnelUrl}\n`;
+
                             env_file = envContent;
-                            
+
                             // Write updated .env file
                             fs.writeFileSync(path_1.default.join(process.cwd(), ".env"), env_file);
                         }
@@ -700,13 +707,17 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
                 if (terratUiBaseMatch) {
                     tunnelUrl = terratUiBaseMatch[1];
                 }
+                const terratWebBaseUrlMatch = envContent.match(/^TERRAT_WEB_BASE_URL=(.+)$/m);
+                if (!tunnelUrl && terratWebBaseUrlMatch) {
+                    tunnelUrl = terratWebBaseUrlMatch[1];
+                }
             }
-            
+
             // Use fallback URL if tunnelUrl is still not set (production path without tunnel)
             if (!tunnelUrl) {
                 tunnelUrl = 'https://terrateam.example.com';
             }
-            
+
             res.render("success.handlebars", { env_file, html_url, id, client_id, client_secret, webhook_secret, pem, tunnelUrl });
         }
         catch (e) {
