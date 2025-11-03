@@ -120,9 +120,11 @@
          // UI base URL
          if (tunnelConfig.needsTunnel && tunnelConfig.tunnelCredentials) {
             envVars += `TERRAT_UI_BASE=https://${tunnelConfig.tunnelCredentials.tunnel_url}\n`;
+            envVars += `TERRAT_WEB_BASE_URL=https://${tunnelConfig.tunnelCredentials.tunnel_url}\n`;
             envVars += `TERRATUNNEL_API_KEY=${tunnelConfig.tunnelCredentials.api_key}\n`;
          } else if (tunnelConfig.serverHostname) {
             envVars += `TERRAT_UI_BASE=https://${tunnelConfig.serverHostname}\n`;
+            envVars += `TERRAT_WEB_BASE_URL=https://${tunnelConfig.serverHostname}\n`;
          }
          
          // Display environment variables
