@@ -670,18 +670,18 @@ const setupAppFactory = (host, port) => async function setupApp(app, { getRouter
                     // Also update .env file with tunnel credentials if not already done
                     if (tunnelCredentials.api_key && !tunnelConfig) {
                         let envContent = env_file.toString();
-                        
+
                         // Check if TERRATUNNEL_API_KEY already exists
                         if (!envContent.includes('TERRATUNNEL_API_KEY=')) {
                             // Remove extra blank lines
                             envContent = envContent.replace(/\n\s*\n/g, '\n');
-                            
+
                             // Add the new keys
                             if (!envContent.endsWith('\n')) {
                                 envContent += '\n';
                             }
                             envContent += `TERRATUNNEL_API_KEY=${tunnelCredentials.api_key}\n`;
-                            
+
                             // Add TERRAT_UI_BASE with proper protocol handling
                             let tunnelUrl = tunnelCredentials.tunnel_url;
                             // Ensure we don't double-add https://

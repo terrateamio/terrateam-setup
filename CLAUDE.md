@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is the Terrateam GitHub App setup wizard - a Node.js monorepo application built with a modified Probot framework (v12.3.0). It guides users through creating and configuring a GitHub App for Terrateam, a GitOps orchestration engine for infrastructure-as-code tools (Terraform, OpenTofu, CDKTF, Terragrunt, and Pulumi).
+This is the Terrateam setup wizard - a Node.js monorepo application built with a modified Probot framework (v12.3.0). It guides users through creating and configuring a GitHub or GitLab App for Terrateam, a GitOps orchestration engine for infrastructure-as-code tools (Terraform, OpenTofu, CDKTF, Terragrunt, and Pulumi).
 
 ## Development Commands
 
@@ -38,15 +38,17 @@ npm run doc        # Generate TypeDoc documentation
 
 **Monorepo Structure**: Root package delegates to `packages/probot/` which contains the modified Probot framework.
 
-**Three-Screen Wizard Flow**:
+**Multi-Step Wizard Flow**:
 1. **Welcome Screen** (`/probot`) - Collects optional user info and telemetry preferences
-2. **App Setup** (`/probot/app-setup`) - Creates GitHub App via manifest
-3. **Success Screen** (`/probot/success`) - Displays generated credentials
+2. **VCS Selection** (`/probot/vcs-selection`) - Choose between GitHub and GitLab
+3. **Tunnel Configuration** (`/probot/tunnel-config`) - Configure tunnel settings with OAuth authentication
+4. **App Setup** (`/probot/app-setup` for GitHub, `/probot/gitlab-pat-setup` for GitLab) - Creates App via manifest or PAT
+5. **Success Screen** (`/probot/success` for GitHub, `/probot/gitlab-success` for GitLab) - Displays generated credentials
 
 **Key Components**:
-- `packages/probot/lib/apps/setup.js` - Main wizard logic and Express routes
+- `packages/probot/lib/apps/setup.js` - Main wizard logic and Express routes for both GitHub and GitLab flows
 - `packages/probot/lib/manifest-creation.js` - GitHub App creation via manifest API
-- `packages/probot/views/*.handlebars` - UI templates (Handlebars templating)
+- `packages/probot/views/*.handlebars` - UI templates including separate templates for GitHub and GitLab flows
 - `packages/probot/static/` - CSS assets and logo
 - `app.yml` - GitHub App manifest template with required permissions
 
@@ -56,13 +58,13 @@ npm run doc        # Generate TypeDoc documentation
 
 1. **Development Mode**: Set `TERRATEAM_DEV_MODE=true` to bypass GitHub App creation flow and use mock data. Access `/probot/dev` for direct success page testing.
 
-2. **GitHub App Manifest**: Dynamically generates manifest with specific Terrateam permissions (actions, contents, workflows, issues, PRs, etc.). Configuration in `app.yml`.
+2. **App Creation**: For GitHub - dynamically generates manifest with specific Terrateam permissions (actions, contents, workflows, issues, PRs, etc.) from `app.yml`. For GitLab - uses Personal Access Token (PAT) configuration.
 
 3. **Environment Management**: Uses `update-dotenv` package to safely generate `.env` files with GitHub App credentials.
 
 4. **Telemetry System**: Optional collection via POST to `https://telemetry.terrateam.io/event/terrateam-setup/opt-in`. Respects user privacy preferences stored in sessionStorage.
 
-5. **GitHub OAuth Integration**: Tunnel configuration step includes GitHub OAuth popup that proxies through Terratunnel's remote OAuth service at `https://tunnel.terrateam.dev`. No local OAuth secrets required.
+5. **OAuth Integration**: Tunnel configuration step includes OAuth popup (GitHub/GitLab) that proxies through Terratunnel's remote OAuth service at `https://tunnel.terrateam.dev`. No local OAuth secrets required.
 
 6. **GitHub Enterprise Support**: Configurable via `GHE_HOST`, `GHE_PROTOCOL`, `GH_ORG`, `GITHUB_API_BASE_URL`, and `GITHUB_WEB_BASE_URL` environment variables for enterprise deployments.
 
@@ -71,7 +73,7 @@ npm run doc        # Generate TypeDoc documentation
 ## Testing and Development
 
 **Development Workflow**:
-1. Use `TERRATEAM_DEV_MODE=true` to test UI flow without creating real GitHub Apps
+1. Use `TERRATEAM_DEV_MODE=true` to test UI flow without creating real Apps (GitHub or GitLab)
 2. Mock data is generated for credential display testing
 3. Template changes require server restart to take effect
 4. TypeScript source is in `packages/probot/src/` (if exists), compiled output in `packages/probot/lib/`
