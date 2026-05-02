@@ -135,12 +135,12 @@
                   <div class="next-steps-item step-item" data-step="4">
                      <div class="step-header" onclick="toggleStep(4)">
                         <div class="step-number">4</div>
-                        <div class="step-title-text">Enable Terrateam UI Access</div>
+                        <div class="step-title-text">Configure GitHub App Webhook & OAuth</div>
                         <div class="step-chevron">▶</div>
                      </div>
                      <div class="step-content" id="step-4-content" style="display: none;">
                         <div class="step-description">
-                           <strong>Enable Terrateam UI Access</strong>
+                           <strong>Configure GitHub App Webhook & OAuth</strong>
                            <ol style="margin-left: 20px; margin-top: 10px;">
                               <li>Navigate to your GitHub App: <a href="{{ html_url }}" target="_blank" class="app-link">{{ html_url }}</a></li>
                               <li>Click on "App settings" on the right side under the Install button</li>
@@ -149,6 +149,12 @@
                                  <div class="code-block" style="margin: 10px 0;">
                                     <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
                                     <code>{{ tunnelUrl }}/api/github/v1/callback</code>
+                                 </div>
+                              </li>
+                              <li>Set the webhook URL to:
+                                 <div class="code-block" style="margin: 10px 0;">
+                                    <button class="code-copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                                    <code>{{ tunnelUrl }}/api/github/v1/events</code>
                                  </div>
                               </li>
                               <li>Save your changes</li>
